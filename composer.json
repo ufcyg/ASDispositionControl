@@ -1,8 +1,14 @@
 {
-  "name": "swag/plugin-skeleton",
-  "description": "Skeleton plugin",
+  "name": "as/disposition-control",
+  "description": "Disposition and stock control",
   "type": "shopware-platform-plugin",
-  "license": "MIT",
+  "version": "v0.1.0",
+  "license": "proprietary",
+  "authors": [
+    {
+        "name": "A&S PMO"
+    }
+  ],
   "autoload": {
     "psr-4": {
       "ASDispositionControl\\": "src/"
@@ -11,8 +17,8 @@
   "extra": {
     "shopware-plugin-class": "ASDispositionControl\\ASDispositionControl",
     "label": {
-      "de-DE": "Skeleton plugin",
-      "en-GB": "Skeleton plugin"
+      "de-DE": "Plugin zur shopinternen Kontrolle von Bestellungen und Bestand",
+      "en-GB": "Plugin for internal tracking of ordered materials and current stock."
     }
   }
 }
