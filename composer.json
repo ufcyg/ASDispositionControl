@@ -1,8 +1,8 @@
 {
   "name": "as/disposition-control",
-  "description": "Disposition and stock control",
+  "description": "Plugin for internal tracking of ordered materials and current stock.",
   "type": "shopware-platform-plugin",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "license": "proprietary",
   "authors": [
     {
@@ -17,8 +17,8 @@
   "extra": {
     "shopware-plugin-class": "ASDispositionControl\\ASDispositionControl",
     "label": {
-      "de-DE": "Plugin zur shopinternen Kontrolle von Bestellungen und Bestand",
-      "en-GB": "Plugin for internal tracking of ordered materials and current stock."
+      "de-DE": "Dispositions- und Bestandskontrolle",
+      "en-GB": "Disposition and stock control"
     }
   }
 }

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace SynlabOrderInterface\Core\Content\DispoControlData;
+namespace ASDispositionControl\Core\Content\DispoControlData;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
