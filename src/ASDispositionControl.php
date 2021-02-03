@@ -53,7 +53,7 @@ class ASDispositionControl extends Plugin
 
         $connection = $this->container->get(Connection::class);
 
-        // $connection->executeUpdate('DROP TABLE IF EXISTS `YOUR_TABLE_NAME`');
+        $connection->executeUpdate('DROP TABLE IF EXISTS `as_dispo_control_data`');
 
         parent::uninstall($context);
     }
