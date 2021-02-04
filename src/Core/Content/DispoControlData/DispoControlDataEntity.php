@@ -11,6 +11,10 @@ class DispoControlDataEntity extends Entity
     
     /** @var string */
     protected $productId;
+    /** @var string */
+    protected $productName;
+    /** @var string */
+    protected $productNumber;
     /** @var int */
     protected $outgoing;
     /** @var int */
@@ -22,10 +26,7 @@ class DispoControlDataEntity extends Entity
 
 
     /** Get the value of productId */ 
-    public function getProductId()
-    {
-        return $this->productId;
-    }
+    public function getProductId() { return $this->productId; }
 
     /** Set the value of productId  @return  self */ 
     public function setProductId($productId)
@@ -35,11 +36,30 @@ class DispoControlDataEntity extends Entity
         return $this;
     }
 
-    /** Get the value of outgoing */ 
-    public function getOutgoing()
+    /** Get the value of productName */ 
+    public function getProductName() { return $this->productName; }
+
+    /** Set the value of productName @return  self */ 
+    public function setProductName($productName)
     {
-        return $this->outgoing;
+        $this->productName = $productName;
+
+        return $this;
     }
+
+    /** Get the value of productNumber */ 
+    public function getProductNumber() { return $this->productNumber; }
+
+    /** Set the value of productNumber @return  self */ 
+    public function setProductNumber($productNumber)
+    {
+        $this->productNumber = $productNumber;
+
+        return $this;
+    }
+
+    /** Get the value of outgoing */ 
+    public function getOutgoing() { return $this->outgoing; }
 
     /** Set the value of outgoing @return  self */ 
     public function setOutgoing($outgoing)
@@ -50,10 +70,7 @@ class DispoControlDataEntity extends Entity
     }
 
     /** Get the value of incoming */ 
-    public function getIncoming()
-    {
-        return $this->incoming;
-    }
+    public function getIncoming() { return $this->incoming; }
 
     /** Set the value of incoming @return  self */ 
     public function setIncoming($incoming)
@@ -64,10 +81,7 @@ class DispoControlDataEntity extends Entity
     }
 
     /** Get the value of minimumThreshold */ 
-    public function getMinimumThreshold()
-    {
-        return $this->minimumThreshold;
-    }
+    public function getMinimumThreshold() { return $this->minimumThreshold; }
 
     /** Set the value of minimumThreshold @return  self */ 
     public function setMinimumThreshold($minimumThreshold)
@@ -78,10 +92,7 @@ class DispoControlDataEntity extends Entity
     }
 
     /** Get the value of notificationThreshold */ 
-    public function getNotificationThreshold()
-    {
-        return $this->notificationThreshold;
-    }
+    public function getNotificationThreshold() { return $this->notificationThreshold; }
 
     /** Set the value of notificationThreshold @return  self */ 
     public function setNotificationThreshold($notificationThreshold)

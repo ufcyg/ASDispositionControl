@@ -4,7 +4,12 @@
         "mainMenuItemGeneral": "Dispositions Kontrolle",
         "descriptionTextModule": "Verwalten von Bestand und Bestellungen",
         "token": "token",
-        "columnTargetMail": "columnTargetMail",
+        "columnProductID": "Produkt Name",
+        "columnProductNumber": "Produkt Nummer",
+        "columnOutgoing": "Zur Zeit in Lieferung zum Kunden",
+        "columnIncoming": "Zur Zeit in Lieferung zum Lager",
+        "columnMinimumThreshold": "Minimaler Bestand",
+        "columnNotificationThreshold": "Benachrichtigungsschwellenwert",
         "uploadWhitelist": "uploadButton"
       },
       "errors": {

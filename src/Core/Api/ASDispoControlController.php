@@ -3,6 +3,7 @@
 namespace ASDispositionControl\Core\Api;
 
 use ASDispositionControl\Core\Utilities\MailServiceHelper;
+use Shopware\Core\Content\Product\ProductEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -68,11 +69,12 @@ class ASDispoControlController extends AbstractController
         $productSearchResult = $productRepository->search(new Criteria(),$context);
 
         $data = null;
-
+        /** @var ProductEntity $productEntity */
         foreach($productSearchResult as $productEntity)
         {
             $productId = $productEntity->getId();
-
+            $productName = $productEntity->getName();
+            $productNumber = $productEntity->getProductNumber();
             $criteria = new Criteria();
             $criteria->addFilter(new EqualsFilter('productId',$productId));
 
@@ -80,7 +82,7 @@ class ASDispoControlController extends AbstractController
             if(count($dispoDataSearchResult) === 0)
             {
                 // product has no equivalent entry in the dispo data table
-                $data[] = ['productId' => $productId, 'outgoing' => 0, 'incoming' => 0, 'minimumThreshold' => 0, 'notificationThreshold' => 0];
+                $data[] = ['productId' => $productId, 'productName' => $productName, 'productNumber' => $productNumber, 'outgoing' => 0, 'incoming' => 0, 'minimumThreshold' => 0, 'notificationThreshold' => 0];
             }            
         }
 

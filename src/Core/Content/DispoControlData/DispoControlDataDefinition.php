@@ -34,6 +34,8 @@ class DispoControlDataDefinition extends EntityDefinition
             [
                 (new IdField('id','id'))->addFlags(new Required(), new PrimaryKey()),
                 new StringField('product_id','productId'),
+                new StringField('product_name','productName'),
+                new StringField('product_number','productNumber'),
                 new IntField('outgoing','outgoing'),
                 new IntField('incoming','incoming'),
                 new IntField('minimum_threshold','minimumThreshold'),
@@ -42,13 +44,3 @@ class DispoControlDataDefinition extends EntityDefinition
         );
     }
 }
-// $connection->exec("CREATE TABLE IF NOT EXISTS `as_dispo_control_data` (
-//     `id`            BINARY(16) NOT NULL,
-//     `product_id`    VARCHAR(255) NOT NULL,
-//     `outgoing`    INTEGER NOT NULL,
-//     `incoming`    INTEGER NOT NULL,
-//     `minimum_threshold`    INTEGER NOT NULL,
-//     `notification_threshold`    INTEGER NOT NULL,
-//     `created_at`    DATETIME(3),
-//     `updated_at`    DATETIME(3)
-//     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");

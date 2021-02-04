@@ -21,18 +21,45 @@ Shopware.Component.register('as-disposition-control-overview', {
     computed: {
         columns() {
             return [{
-                property: 'targetMail',
-                dataIndex: 'targetMail',
-                label: this.$t('as-disposition-control.general.columnTargetMail'),
+                property: 'productName',
+                dataIndex: 'productName',
+                label: this.$t('as-disposition-control.general.columnProductID'),
                 allowResize: true,
                 primary: true
             }
-            // ,{
-            //     property: 'token',
-            //     dataIndex: 'token',
-            //     label: this.$t('as-steered-customer-registration.general.token'),
-            //     allowResize: true
-            // }
+            ,{
+                property: 'productNumber',
+                dataIndex: 'productNumber',
+                label: this.$t('as-disposition-control.general.columnProductNumber'),
+                allowResize: true
+            }
+            ,{
+                property: 'outgoing',
+                dataIndex: 'outgoing',
+                label: this.$t('as-disposition-control.general.columnOutgoing'),
+                allowResize: true
+            }
+            ,{
+                property: 'incoming',
+                dataIndex: 'incoming',
+                label: this.$t('as-disposition-control.general.columnIncoming'),
+                allowResize: true,
+                inlineEdit: 'number'
+            }
+            ,{
+                property: 'minimumThreshold',
+                dataIndex: 'minimumThreshold',
+                label: this.$t('as-disposition-control.general.columnMinimumThreshold'),
+                allowResize: true,
+                inlineEdit: 'number'
+            }
+            ,{
+                property: 'notificationThreshold',
+                dataIndex: 'notificationThreshold',
+                label: this.$t('as-disposition-control.general.columnNotificationThreshold'),
+                allowResize: true,
+                inlineEdit: 'number'
+            }
             ];
         }
     },

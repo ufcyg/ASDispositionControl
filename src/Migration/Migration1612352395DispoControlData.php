@@ -17,6 +17,8 @@ class Migration1612352395DispoControlData extends MigrationStep
         $connection->exec("CREATE TABLE IF NOT EXISTS `as_dispo_control_data` (
             `id`            BINARY(16) NOT NULL,
             `product_id`    VARCHAR(255) NOT NULL,
+            `product_name`    VARCHAR(255) NOT NULL,
+            `product_number`    VARCHAR(255) NOT NULL,
             `outgoing`    INTEGER NOT NULL,
             `incoming`    INTEGER NOT NULL,
             `minimum_threshold`    INTEGER NOT NULL,

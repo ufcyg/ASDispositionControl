@@ -25,9 +25,9 @@ Shopware.Module.register('as-disposition-control', {
 
     navigation: [{
         label: 'as-disposition-control.general.mainMenuItemGeneral',
-        color: '#62ff80',
+        color: '#0400ff',
         path: 'as.disposition.control.overview',
-        icon: 'default-communication-envelope',
+        icon: 'default-arrow-switch',
         position: 11
     }],
 });

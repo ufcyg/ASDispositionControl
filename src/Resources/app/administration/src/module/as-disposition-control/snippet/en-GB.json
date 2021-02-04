@@ -4,7 +4,12 @@
         "mainMenuItemGeneral": "Disposition Control",
         "descriptionTextModule": "Monitoring Stock and Supply",
         "token": "token",
-        "columnTargetMail": "columnTargetMail",
+        "columnProductID": "Product name",
+        "columnProductNumber": "Productnumber",
+        "columnOutgoing": "Currently in delivery to customer",
+        "columnIncoming": "Currently in delivery to warehouse",
+        "columnMinimumThreshold": "Minimum Stock",
+        "columnNotificationThreshold": "Notification Threshold",
         "uploadWhitelist": "uploadWhitelist"
       },
       "errors": {
