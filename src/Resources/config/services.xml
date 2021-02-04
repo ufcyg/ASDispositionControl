@@ -5,15 +5,20 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="ASDispositionControl\Core\Api\Utilities\MailServiceHelper" public="true">      
+        <service id="ASDispositionControl\Core\Utilities\MailServiceHelper" public="true">      
             <argument id="Shopware\Core\Content\MailTemplate\Service\MailService" type="service"/>
         </service>
-        <service id="SynlabOrderInterface\Core\Api\OrderInterfaceController" public="true">
+        
+        <service id="ASDispositionControl\Core\Api\ASDispoControlController" public="true">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
-            <argument type="service" id="ASDispositionControl\Core\Api\Utilities\MailServiceHelper" />
+            <argument type="service" id="ASDispositionControl\Core\Utilities\MailServiceHelper" />
             <call method="setContainer">
                 <argument type="service" id="service_container" />
             </call>
+        </service>
+
+        <service id="ASDispositionControl\Core\Content\DispoControlData\DispoControlDataDefinition">
+            <tag name="shopware.entity.definition" entity="as_dispo_control_data" />
         </service>
     </services>
 </container>

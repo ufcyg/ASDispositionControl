@@ -1,0 +1,19 @@
+{
+    "as-disposition-control": {
+      "general": {
+        "mainMenuItemGeneral": "Dispositions Kontrolle",
+        "descriptionTextModule": "Verwalten von Bestand und Bestellungen",
+        "token": "token",
+        "columnTargetMail": "columnTargetMail",
+        "uploadWhitelist": "uploadButton"
+      },
+      "errors": {
+        "creation": "Creation Error (deu)"
+      },
+      "detail":{
+        "saveButtonText": "SpeichernButton",
+        "cancelButtonText": "AbbrechenButton"
+      }
+    }
+  }
+  

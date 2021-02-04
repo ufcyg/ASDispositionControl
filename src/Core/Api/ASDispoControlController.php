@@ -1,9 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace SynlabOrderInterface\Core\Api;
+namespace ASDispositionControl\Core\Api;
 
 use ASDispositionControl\Core\Utilities\MailServiceHelper;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,9 +37,18 @@ class ASDispoControlController extends AbstractController
      */
     public function dummyRoute(Context $context): ?Response
     {
-        $salesChannel = $this->systemConfigService->get('ASDispositionControl.config.fallbackSaleschannelNotification');
-        $notification = "Hello from [$salesChannel]<br><br>This is a test.<br>Henlo";
-        $this->mailServiceHelper->sendMyMail('iifsanalyzer@gmail.com', 'Melle Mellowski', $salesChannel,'TestSubject', $notification, 'TestSenderName');
+        // $salesChannel = $this->systemConfigService->get('ASDispositionControl.config.fallbackSaleschannelNotification');
+        // $notification = "Hello from [$salesChannel]<br><br>This is a test.<br>Henlo";
+        // $this->mailServiceHelper->sendMyMail('iifsanalyzer@gmail.com', 'Melle Mellowski', $salesChannel,'TestSubject', $notification, 'TestSenderName');
+        /** @var EntityRepositoryInterface $asDispoDataRepository */
+        $asDispoDataRepository = $this->get('as_dispo_control_data.repository');
+        
+        $data = [
+            ['productId' => 'asdwx123', 'outgoing' => 1, 'incoming' => 123, 'minimumThreshold' => 33, 'notificationThreshold' => 44],
+        ];
+        
+        $asDispoDataRepository->create($data,$context);
+        
         return new Response('',Response::HTTP_NO_CONTENT);
     }
 
@@ -47,7 +59,36 @@ class ASDispoControlController extends AbstractController
      */
     public function updateDispoControlData(Context $context): ?Response
     {
-        $this->container->get('');
+        /** @var EntityRepositoryInterface $asDispoDataRepository */
+        $asDispoDataRepository = $this->get('as_dispo_control_data.repository');
+        /** @var EntityRepositoryInterface $productRepository */
+        $productRepository = $this->get('product.repository');
+
+
+        $productSearchResult = $productRepository->search(new Criteria(),$context);
+
+        $data = null;
+
+        foreach($productSearchResult as $productEntity)
+        {
+            $productId = $productEntity->getId();
+
+            $criteria = new Criteria();
+            $criteria->addFilter(new EqualsFilter('productId',$productId));
+
+            $dispoDataSearchResult = $asDispoDataRepository->search($criteria,$context);
+            if(count($dispoDataSearchResult) === 0)
+            {
+                // product has no equivalent entry in the dispo data table
+                $data[] = ['productId' => $productId, 'outgoing' => 0, 'incoming' => 0, 'minimumThreshold' => 0, 'notificationThreshold' => 0];
+            }            
+        }
+
+        if($data != null)
+        {
+            $asDispoDataRepository->create($data,$context);
+        }
+
         return new Response('',Response::HTTP_NO_CONTENT);
     }
 }

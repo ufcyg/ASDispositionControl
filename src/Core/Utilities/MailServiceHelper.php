@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace ASDispositionControl\Core\Utilities;
 
 use Shopware\Core\Content\MailTemplate\Service\MailService;

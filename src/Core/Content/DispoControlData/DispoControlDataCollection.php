@@ -5,13 +5,13 @@ namespace ASDispositionControl\Core\Content\DispoControlData;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 /**
- * @method void              add(SteeredCustomerRegistrationCollection $entity)
- * @method void              set(string $key, SteeredCustomerRegistrationCollection $entity)
- * @method SteeredCustomerRegistrationCollection[]    getIterator()
- * @method SteeredCustomerRegistrationCollection[]    getElements()
- * @method SteeredCustomerRegistrationCollection|null get(string $key)
- * @method SteeredCustomerRegistrationCollection|null first()
- * @method SteeredCustomerRegistrationCollection|null last()
+ * @method void              add(DispoControlDataCollection $entity)
+ * @method void              set(string $key, DispoControlDataCollection $entity)
+ * @method DispoControlDataCollection[]    getIterator()
+ * @method DispoControlDataCollection[]    getElements()
+ * @method DispoControlDataCollection|null get(string $key)
+ * @method DispoControlDataCollection|null first()
+ * @method DispoControlDataCollection|null last()
  */
 class DispoControlDataCollection extends EntityCollection
 {

@@ -1,0 +1,19 @@
+{
+    "as-steered-customer-registration": {
+      "general": {
+        "mainMenuItemGeneral": "Disposition Control",
+        "descriptionTextModule": "Monitoring Stock and Supply",
+        "token": "token",
+        "columnTargetMail": "columnTargetMail",
+        "uploadWhitelist": "uploadWhitelist"
+      },
+      "errors": {
+        "creation": "Creation Error (eng)"
+      },
+      "detail":{
+        "saveButtonText": "SaveButton",
+        "cancelButtonText": "CancelButton"
+      }
+    }
+  }
+  
