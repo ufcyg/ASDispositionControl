@@ -20,5 +20,12 @@
         <service id="ASDispositionControl\Core\Content\DispoControlData\DispoControlDataDefinition">
             <tag name="shopware.entity.definition" entity="as_dispo_control_data" />
         </service>
+
+        <service id="ASDispositionControl\Subscriber\ProductEventSubscriber">
+            <tag name="kernel.event_subscriber"/>
+            <tag name="shopware.event_subscriber"/>
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
+            <argument type="service" id="ASDispositionControl\Core\Api\ASDispoControlController" />
+        </service>
     </services>
 </container>

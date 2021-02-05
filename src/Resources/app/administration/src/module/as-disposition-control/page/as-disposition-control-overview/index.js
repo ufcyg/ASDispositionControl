@@ -34,9 +34,21 @@ Shopware.Component.register('as-disposition-control-overview', {
                 allowResize: true
             }
             ,{
+                property: 'stock',
+                dataIndex: 'stock',
+                label: this.$t('as-disposition-control.general.columnStock'),
+                allowResize: true
+            }
+            ,{
                 property: 'outgoing',
                 dataIndex: 'outgoing',
                 label: this.$t('as-disposition-control.general.columnOutgoing'),
+                allowResize: true
+            }
+            ,{
+                property: 'stockAvailable',
+                dataIndex: 'stockAvailable',
+                label: this.$t('as-disposition-control.general.columnStockAvailable'),
                 allowResize: true
             }
             ,{
@@ -47,16 +59,16 @@ Shopware.Component.register('as-disposition-control-overview', {
                 inlineEdit: 'number'
             }
             ,{
-                property: 'minimumThreshold',
-                dataIndex: 'minimumThreshold',
-                label: this.$t('as-disposition-control.general.columnMinimumThreshold'),
+                property: 'notificationThreshold',
+                dataIndex: 'notificationThreshold',
+                label: this.$t('as-disposition-control.general.columnNotificationThreshold'),
                 allowResize: true,
                 inlineEdit: 'number'
             }
             ,{
-                property: 'notificationThreshold',
-                dataIndex: 'notificationThreshold',
-                label: this.$t('as-disposition-control.general.columnNotificationThreshold'),
+                property: 'minimumThreshold',
+                dataIndex: 'minimumThreshold',
+                label: this.$t('as-disposition-control.general.columnMinimumThreshold'),
                 allowResize: true,
                 inlineEdit: 'number'
             }

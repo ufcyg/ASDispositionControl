@@ -82,13 +82,33 @@ class ASDispoControlController extends AbstractController
             if(count($dispoDataSearchResult) === 0)
             {
                 // product has no equivalent entry in the dispo data table
-                $data[] = ['productId' => $productId, 'productName' => $productName, 'productNumber' => $productNumber, 'outgoing' => 0, 'incoming' => 0, 'minimumThreshold' => 0, 'notificationThreshold' => 0];
+                $data[] = ['productId' => $productId, 'productName' => $productName, 'productNumber' => $productNumber, 'stock' => $productEntity->getStock(), 'outgoing' => 0, 'stockAvailable' => $productEntity->getAvailableStock() != null ? $productEntity->getAvailableStock() : $productEntity->getStock(), 'incoming' => 0, 'minimumThreshold' => 0, 'notificationThreshold' => 0];
             }            
         }
 
         if($data != null)
         {
             $asDispoDataRepository->create($data,$context);
+        }
+
+        return new Response('',Response::HTTP_NO_CONTENT);
+    }
+
+    public function deleteDispoControlEntry(string $productID, Context $context): ?Response
+    {
+        /** @var EntityRepositoryInterface $asDispoDataRepository */
+        $asDispoDataRepository = $this->get('as_dispo_control_data.repository');
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('productId', $productID));
+
+        $searchResult = $asDispoDataRepository->search($criteria,$context);
+        if(count($searchResult) > 0)
+        {
+            $entity = $searchResult->first();
+            $asDispoDataRepository->delete([
+                ['id' => $entity->getId()],
+            ],$context);
         }
 
         return new Response('',Response::HTTP_NO_CONTENT);

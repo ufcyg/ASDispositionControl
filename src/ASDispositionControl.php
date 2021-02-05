@@ -35,6 +35,7 @@ class ASDispositionControl extends Plugin
     /** @inheritDoc */
     public function activate(ActivateContext $activateContext): void
     {
+        $var = 1;
     }
 
     /** @inheritDoc */

@@ -3,14 +3,15 @@
       "general": {
         "mainMenuItemGeneral": "Disposition Control",
         "descriptionTextModule": "Monitoring Stock and Supply",
-        "token": "token",
-        "columnProductID": "Product name",
+        "columnProductID": "Productname",
         "columnProductNumber": "Productnumber",
-        "columnOutgoing": "Currently in delivery to customer",
-        "columnIncoming": "Currently in delivery to warehouse",
+        "columnStock": "Stock",
+        "columnOutgoing": "Commissioned",
+        "columnStockAvailable": "Available Stock",
+        "columnIncoming": "Open order volume",
         "columnMinimumThreshold": "Minimum Stock",
-        "columnNotificationThreshold": "Notification Threshold",
-        "uploadWhitelist": "uploadWhitelist"
+        "columnNotificationThreshold": "Reorder point",
+        "uploadWhitelist": "uploadButton"
       },
       "errors": {
         "creation": "Creation Error (eng)"

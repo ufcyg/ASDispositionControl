@@ -16,7 +16,11 @@ class DispoControlDataEntity extends Entity
     /** @var string */
     protected $productNumber;
     /** @var int */
+    protected $stock;
+    /** @var int */
     protected $outgoing;
+    /** @var int */
+    protected $stockAvailable;
     /** @var int */
     protected $incoming;
     /** @var int */
@@ -58,6 +62,17 @@ class DispoControlDataEntity extends Entity
         return $this;
     }
 
+    /** Get the value of stock */ 
+    public function getStock() { return $this->stock; }
+
+    /** Set the value of stock @return  self */ 
+    public function setStock($stock)
+    {
+        $this->stock = $stock;
+
+        return $this;
+    }
+
     /** Get the value of outgoing */ 
     public function getOutgoing() { return $this->outgoing; }
 
@@ -65,6 +80,17 @@ class DispoControlDataEntity extends Entity
     public function setOutgoing($outgoing)
     {
         $this->outgoing = $outgoing;
+
+        return $this;
+    }
+
+    /** Get the value of stockAvailable */ 
+    public function getStockAvailable() { return $this->stockAvailable; }
+
+    /** Set the value of stockAvailable @return  self */ 
+    public function setStockAvailable($stockAvailable)
+    {
+        $this->stockAvailable = $stockAvailable;
 
         return $this;
     }
