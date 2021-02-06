@@ -83,6 +83,13 @@ class ASDispoControlController extends AbstractController
             {
                 // product has no equivalent entry in the dispo data table
                 $data[] = ['productId' => $productId, 'productName' => $productName, 'productNumber' => $productNumber, 'stock' => $productEntity->getStock(), 'outgoing' => 0, 'stockAvailable' => $productEntity->getAvailableStock() != null ? $productEntity->getAvailableStock() : $productEntity->getStock(), 'incoming' => 0, 'minimumThreshold' => 0, 'notificationThreshold' => 0];
+            }
+            else
+            {
+                $entity = $dispoDataSearchResult->first();
+                // update the entity
+                $updateData[] = ['id' => $entity->getId(), 'productName' => $productName, 'productNumber' => $productNumber, 'stock' => $productEntity->getStock(), 'stockAvailable' => $productEntity->getAvailableStock() != null ? $productEntity->getAvailableStock() : $productEntity->getStock()];
+                $asDispoDataRepository->update($updateData, $context);
             }            
         }
 
