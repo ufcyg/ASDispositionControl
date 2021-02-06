@@ -35,7 +35,10 @@ class ASDispositionControl extends Plugin
     /** @inheritDoc */
     public function activate(ActivateContext $activateContext): void
     {
-        $var = 1;
+        $context = $activateContext->getContext();
+        /** @var ASDispoControlController $dispoController */
+        $dispoController = $this->container->get('ASDispositionControl\Core\Api\ASDispoControlController');
+        $dispoController->updateDispoControlData($context);
     }
 
     /** @inheritDoc */

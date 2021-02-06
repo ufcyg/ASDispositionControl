@@ -27,5 +27,13 @@
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
             <argument type="service" id="ASDispositionControl\Core\Api\ASDispoControlController" />
         </service>
+
+        <service id="ASDispositionControl\ScheduledTask\DispoControlTask">
+            <tag name="shopware.scheduled.task" />
+        </service>
+        <service id="ASDispositionControl\ScheduledTask\DispoControlTaskHandler">
+            <argument type="service" id="scheduled_task.repository" />
+            <tag name="messenger.message_handler" />
+        </service>
     </services>
 </container>
