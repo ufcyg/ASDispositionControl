@@ -10,12 +10,12 @@ use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskHandler;
 
 class DispoControlTaskHandler extends ScheduledTaskHandler
 {    
-    /** @var ASDispoControlController $dispoController */
-    private $dispoController;
+    /** @var ASDispoControlController $asDispoController */
+    private $asDispoController;
     public function __construct(EntityRepositoryInterface $scheduledTaskRepository,
-                                ASDispoControlController $dispoController)
+                                ASDispoControlController $asDispoController)
     {
-        $this->dispoController = $dispoController;
+        $this->asDispoController = $asDispoController;
         parent::__construct($scheduledTaskRepository);
     }
 
@@ -26,7 +26,7 @@ class DispoControlTaskHandler extends ScheduledTaskHandler
 
     public function run(): void
     {
-        $this->dispoController->updateDispoControlData(Context::createDefaultContext());
-        $this->dispoController->checkThresholds(Context::createDefaultContext());
+        $this->asDispoController->updateDispoControlData(Context::createDefaultContext());
+        $this->asDispoController->checkThresholds(Context::createDefaultContext());
     }    
 }

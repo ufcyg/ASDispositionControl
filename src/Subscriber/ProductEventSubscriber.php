@@ -45,6 +45,7 @@ class ProductEventSubscriber implements EventSubscriberInterface
         $payload = $eventArray[0]->getPayload();
         $newStateID = $payload['stateId'];
         $this->asDispoController->updateOrderStatusChange($orderID,$newStateID);
+        $this->asDispoController->checkThresholds(Context::createDefaultContext());
     }
 
     public function onProductDeletedEvent(EntityWrittenEvent $event)

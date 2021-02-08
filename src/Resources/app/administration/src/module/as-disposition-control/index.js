@@ -8,7 +8,7 @@ Shopware.Module.register('as-disposition-control', {
     name: 'dispositionControl',
     title: 'as-disposition-control.general.mainMenuItemGeneral',
     description: 'as-disposition-control.general.descriptionTextModule',
-    color: '#ad00ad',
+    color: '#0400ff',
     icon: 'default-communication-envelope',
 
     snippets: {
