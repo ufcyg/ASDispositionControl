@@ -2,7 +2,7 @@
   "name": "as/disposition-control",
   "description": "Plugin for internal tracking of ordered materials and current stock.",
   "type": "shopware-platform-plugin",
-  "version": "v0.2.0",
+  "version": "v0.2.1",
   "license": "proprietary",
   "authors": [
     {

@@ -2,14 +2,20 @@
 
 namespace ASDispositionControl\ScheduledTask;
 
+use ASDispositionControl\Core\Api\ASDispoControlController;
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskHandler;
 
 
 class DispoControlTaskHandler extends ScheduledTaskHandler
 {    
-    public function __construct(EntityRepositoryInterface $scheduledTaskRepository)
+    /** @var ASDispoControlController $dispoController */
+    private $dispoController;
+    public function __construct(EntityRepositoryInterface $scheduledTaskRepository,
+                                ASDispoControlController $dispoController)
     {
+        $this->dispoController = $dispoController;
         parent::__construct($scheduledTaskRepository);
     }
 
@@ -20,10 +26,7 @@ class DispoControlTaskHandler extends ScheduledTaskHandler
 
     public function run(): void
     {
-        // $path = '../custom/plugins/ASDispositionControl/TestFolderScheduledTask/';
-
-        // if (!file_exists($path)) {
-        //     mkdir($path, 0777, true);
-        // }
+        $this->dispoController->updateDispoControlData(Context::createDefaultContext());
+        $this->dispoController->checkThresholds(Context::createDefaultContext());
     }    
 }

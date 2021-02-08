@@ -33,6 +33,7 @@
         </service>
         <service id="ASDispositionControl\ScheduledTask\DispoControlTaskHandler">
             <argument type="service" id="scheduled_task.repository" />
+            <argument type="service" id="ASDispositionControl\Core\Api\ASDispoControlController" />
             <tag name="messenger.message_handler" />
         </service>
     </services>

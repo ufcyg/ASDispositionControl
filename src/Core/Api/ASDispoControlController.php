@@ -205,6 +205,9 @@ class ASDispoControlController extends AbstractController
             /** @var OrderLineItemEntity $lineItem */
             foreach($lineItems as $lineItem)                                                // iterate through all line items of this order
             {
+                if($lineItem->getIdentifier() == 'INTERNAL_DISCOUNT')
+                    continue;
+
                 $lineItemProductID = $lineItem->getProductId();
                 if($product->getId() == $lineItemProductID)                                 // if looked at product id is the same as the line item product id
                 {
@@ -235,5 +238,70 @@ class ASDispoControlController extends AbstractController
         }
 
         return new Response('',Response::HTTP_NO_CONTENT);
+    }
+
+    public function updateOrderStatusChange(string $orderID, string $newStateID)
+    {
+        /** @var EntityRepositoryInterface $stateRepository */
+        $stateRepository = $this->get('state_machine_state.repository');
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('id',$newStateID));
+        $stateTechnicalName = $stateRepository->search($criteria,Context::createDefaultContext())->first()->getTechnicalName();
+        /** @var EntityRepositoryInterface $asDispoDataRepository */
+        $orderLineItemRepository = $this->get('order_line_item.repository');
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('orderId',$orderID));
+        $lineItems = $orderLineItemRepository->search($criteria,Context::createDefaultContext());
+
+        /** @var OrderLineItemEntity $lineItem */
+        foreach($lineItems as $lineItem)
+        {
+            if($lineItem->getIdentifier() == 'INTERNAL_DISCOUNT')
+                continue;
+            $productID = $lineItem->getProductId();
+            /** @var EntityRepositoryInterface $productRepository */
+            $productRepository = $this->get('product.repository');
+            $criteria = new Criteria();
+            $criteria->addFilter(new EqualsFilter('id',$productID));
+            /** @var ProductEntity $product */
+            $product = $productRepository->search($criteria,Context::createDefaultContext())->first();
+
+            $productNumber = $product->getProductNumber();
+
+
+            /** @var EntityRepositoryInterface $asDispoDataRepository */
+            $asDispoDataRepository = $this->get('as_dispo_control_data.repository');
+            $criteria = new Criteria();
+            $criteria->addFilter(new EqualsFilter('productNumber',$productNumber));
+            /** @var DispoControlDataEntity $dispoDataEntry */
+            $dispoDataEntry = $asDispoDataRepository->search($criteria,Context::createDefaultContext())->first();
+
+            $stock = $dispoDataEntry->getStock();
+            $commissioned = $dispoDataEntry->getCommissioned();
+            $availableStock = $dispoDataEntry->getStockAvailable();
+
+            $deltaQuantity = $lineItem->getQuantity();
+
+            switch($stateTechnicalName)
+            {
+                case 'completed':
+                    $stock -= $deltaQuantity;
+                    $commissioned -= $deltaQuantity;
+                break;
+                case 'in_progress':
+                break;
+                case 'cancelled':
+                    $stock += $deltaQuantity;
+                    $commissioned -= $deltaQuantity;
+                break;
+                case 'open':
+                    $availableStock -= $deltaQuantity;
+                    $commissioned += $deltaQuantity;
+                break;
+            }
+
+            $updateData[] = ['id' => $dispoDataEntry->getId(),  'stock' => $stock, 'commissioned' => $commissioned,'stockAvailable' => $availableStock];
+            $asDispoDataRepository->update($updateData, Context::createDefaultContext());
+        }
     }
 }

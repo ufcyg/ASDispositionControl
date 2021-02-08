@@ -13,6 +13,6 @@ class DispoControlTask extends ScheduledTask
 
     public static function getDefaultInterval(): int
     {
-        return 43200; // 12 hours
+        return 86400; // 24 hours
     }
 }

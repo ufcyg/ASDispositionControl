@@ -27,7 +27,8 @@ class ProductEventSubscriber implements EventSubscriberInterface
         // Return the events to listen to as array like this:  <event to listen to> => <method to execute>
         return [
             'product.written' => 'onProductWrittenEvent',
-            'product.deleted' => 'onProductDeletedEvent'
+            'product.deleted' => 'onProductDeletedEvent',
+            'order.written' => 'onOrderWrittenEvent'
         ];
     }
 
@@ -35,6 +36,15 @@ class ProductEventSubscriber implements EventSubscriberInterface
     {
         $eventArray = $event->getWriteResults();
         $this->asDispoController->updateDispoControlData(Context::createDefaultContext());
+    }
+
+    public function onOrderWrittenEvent(EntityWrittenEvent $event)
+    {
+        $eventArray = $event->getWriteResults();
+        $orderID = $eventArray[0]->getPrimaryKey();
+        $payload = $eventArray[0]->getPayload();
+        $newStateID = $payload['stateId'];
+        $this->asDispoController->updateOrderStatusChange($orderID,$newStateID);
     }
 
     public function onProductDeletedEvent(EntityWrittenEvent $event)
