@@ -3,6 +3,7 @@
 namespace ASDispositionControl\Core\Content\DispoControlData;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\BoolField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
@@ -33,6 +34,7 @@ class DispoControlDataDefinition extends EntityDefinition
         return new FieldCollection(
             [
                 (new IdField('id','id'))->addFlags(new Required(), new PrimaryKey()),
+                new BoolField('notifications_activated','notificationsActivated'),
                 new StringField('product_id','productId'),
                 new StringField('product_name','productName'),
                 new StringField('product_number','productNumber'),

@@ -14,6 +14,15 @@
             <helpText>Input as many recipients as needed in valid formation: NAME DELIMITER(;) MAIL</helpText>
             <helpText lang="de-DE">Geben Sie beliebig viele Empfänger in valider Form ein: NAME TRENNZEICHEN(;) MAILADRESSE.</helpText>
         </input-field>
+        <input-field>
+            <name>notificationRecipientsEscalated</name>
+            <label>Name and Mail of recipients of stock notifications for escalation</label>
+            <label lang="de-DE">Name und Mailadresse der Empfänger von Bestandsmeldungen zu Eskalation</label>          
+            <placeholder>John Doe;john.doe@john.doe</placeholder>
+            <placeholder lang="de-DE">Max Mustermann;mustermann@muster.man</placeholder>
+            <helpText>Input as many recipients as needed in valid formation: NAME DELIMITER(;) MAIL</helpText>
+            <helpText lang="de-DE">Geben Sie beliebig viele Empfänger in valider Form ein: NAME TRENNZEICHEN(;) MAILADRESSE.</helpText>
+        </input-field>
 
         <component name="sw-entity-single-select">
             <name>fallbackSaleschannelNotification</name>

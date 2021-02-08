@@ -9,6 +9,8 @@ class DispoControlDataEntity extends Entity
 {
     use EntityIdTrait;
     
+    /** @var bool */
+    protected $notificationsActivated;
     /** @var string */
     protected $productId;
     /** @var string */
@@ -28,6 +30,17 @@ class DispoControlDataEntity extends Entity
     /** @var int */
     protected $notificationThreshold;
 
+
+    /** Get the value of notificationsActivated */ 
+    public function getNotificationsActivated() { return $this->notificationsActivated; }
+
+    /** Set the value of notificationsActivated @return  self */ 
+    public function setNotificationsActivated($notificationsActivated)
+    {
+        $this->notificationsActivated = $notificationsActivated;
+
+        return $this;
+    }
 
     /** Get the value of productId */ 
     public function getProductId() { return $this->productId; }

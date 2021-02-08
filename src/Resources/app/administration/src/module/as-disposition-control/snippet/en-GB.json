@@ -3,6 +3,7 @@
       "general": {
         "mainMenuItemGeneral": "Disposition Control",
         "descriptionTextModule": "Monitoring Stock and Supply",
+        "columnNotificationsActivated": "Notifications activated",
         "columnProductID": "Productname",
         "columnProductNumber": "Productnumber",
         "columnStock": "Stock",

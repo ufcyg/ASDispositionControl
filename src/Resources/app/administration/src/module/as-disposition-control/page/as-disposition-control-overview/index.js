@@ -21,6 +21,13 @@ Shopware.Component.register('as-disposition-control-overview', {
     computed: {
         columns() {
             return [{
+                property: 'notificationsActivated',
+                dataIndex: 'notificationsActivated',
+                label: this.$t('as-disposition-control.general.columnNotificationsActivated'),
+                allowResize: true,
+                inlineEdit: 'boolean'
+            },
+            {
                 property: 'productName',
                 dataIndex: 'productName',
                 label: this.$t('as-disposition-control.general.columnProductID'),

@@ -3,6 +3,7 @@
       "general": {
         "mainMenuItemGeneral": "Dispositions Kontrolle",
         "descriptionTextModule": "Verwalten von Bestand und Bestellungen",
+        "columnNotificationsActivated": "Benachrichtigungen aktiv",
         "columnProductID": "Produkt Name",
         "columnProductNumber": "Produkt Nummer",
         "columnStock": "Bestand",

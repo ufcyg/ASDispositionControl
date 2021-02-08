@@ -2,6 +2,7 @@
 
 namespace ASDispositionControl\Core\Api;
 
+use ASDispositionControl\Core\Content\DispoControlData\DispoControlDataEntity;
 use ASDispositionControl\Core\Utilities\MailServiceHelper;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -44,14 +45,14 @@ class ASDispoControlController extends AbstractController
         // $salesChannel = $this->systemConfigService->get('ASDispositionControl.config.fallbackSaleschannelNotification');
         // $notification = "Hello from [$salesChannel]<br><br>This is a test.<br>Henlo";
         // $this->mailServiceHelper->sendMyMail('iifsanalyzer@gmail.com', 'Melle Mellowski', $salesChannel,'TestSubject', $notification, 'TestSenderName');
-        /** @var EntityRepositoryInterface $asDispoDataRepository */
-        $asDispoDataRepository = $this->get('as_dispo_control_data.repository');
+        // /** @var EntityRepositoryInterface $asDispoDataRepository */
+        // $asDispoDataRepository = $this->get('as_dispo_control_data.repository');
         
-        $data = [
-            ['productId' => 'asdwx123', 'outgoing' => 1, 'incoming' => 123, 'minimumThreshold' => 33, 'notificationThreshold' => 44],
-        ];
+        // $data = [
+        //     ['productId' => 'asdwx123', 'outgoing' => 1, 'incoming' => 123, 'minimumThreshold' => 33, 'notificationThreshold' => 44],
+        // ];
         
-        $asDispoDataRepository->create($data,$context);
+        // $asDispoDataRepository->create($data,$context);
         
         return new Response('',Response::HTTP_NO_CONTENT);
     }
@@ -67,13 +68,56 @@ class ASDispoControlController extends AbstractController
         $asDispoDataRepository = $this->get('as_dispo_control_data.repository');
         $criteria = new Criteria();
         $dataEntries = $asDispoDataRepository->search($criteria, $context);
-
+        /** @var DispoControlDataEntity $dataEntry */
         foreach($dataEntries as $dataEntry)
         {
-
+            if($dataEntry->getNotificationsActivated())
+            {
+                $availableStock = $dataEntry->getStockAvailable();
+                $notificationThreshold = $dataEntry->getNotificationThreshold();
+                $absoluteMinimum = $dataEntry->getMinimumThreshold();
+                $incoming = $dataEntry->getIncoming();
+                if($notificationThreshold > ($availableStock + $incoming))
+                {
+                    //notification to administrators
+                    $recipientList = $this->systemConfigService->get('ASDispositionControl.config.notificationRecipients');
+                    $recipientData = explode(';', $recipientList);
+                    $subject = 'Meldebestand unterschritten';
+                    $message = "Der Meldebestand für<br><br>{$dataEntry->getProductNumber()}<br><br>wurde unterschritten.<br><br>Bitte nachbestellen.";
+                    $this->sendNotification($subject,$message,$recipientData);
+                }
+                if($absoluteMinimum > ($availableStock))
+                {
+                    //escalation
+                    $recipientList = $this->systemConfigService->get('ASDispositionControl.config.notificationRecipientsEscalated');
+                    $recipientData = explode(';', $recipientList);
+                    $subject = 'ESKALATION: Sicherheitsbestand unterschritten';
+                    $message = "Der Meldebestand für<br><br>{$dataEntry->getProductNumber()}<br><br>wurde unterschritten.<br><br>Nachbestellung dingend!<br><br>Derzeit verfügbar: {$availableStock}<br><br>Offene Bestellungen: {$incoming}";
+                    $this->sendNotification($subject,$message,$recipientData);
+                }
+            }
         }
 
         return new Response('',Response::HTTP_NO_CONTENT);
+    }
+
+    /* Sends an eMail to every entry in the plugin configuration inside the administration frontend */
+    private function sendNotification(string $errorSubject, string $message, $recipientData)
+    {
+        $notificationSalesChannel = $this->systemConfigService->get('ASDispositionControl.config.fallbackSaleschannelNotification');
+
+        for ($i = 0; $i< count($recipientData); $i +=2 )
+        {
+            $recipientName = $recipientData[$i];
+            $recipientAddress = $recipientData[$i+1];
+
+            $mailCheck = explode('@', $recipientAddress);
+            if(count($mailCheck) != 2)
+            {
+                continue;
+            }
+            $this->mailServiceHelper->sendMyMail($recipientAddress, $recipientName, $notificationSalesChannel, $errorSubject, $message, 'DispositionControl');
+        }
     }
 
     /**
@@ -107,7 +151,7 @@ class ASDispoControlController extends AbstractController
                 $commissioned = 0;
                 $availableStock = $this->calculateAvailableStock($productNumber, $context, $commissioned);
                 // product has no equivalent entry in the dispo data table
-                $data[] = ['productId' => $productId, 'productName' => $productName, 'productNumber' => $productNumber, 'stock' => $productEntity->getStock(), 'commissioned' => $commissioned, 'stockAvailable' => $availableStock, 'incoming' => 0, 'minimumThreshold' => 0, 'notificationThreshold' => 0];
+                $data[] = ['notificationsActivated' => true,'productId' => $productId, 'productName' => $productName, 'productNumber' => $productNumber, 'stock' => $productEntity->getStock(), 'commissioned' => $commissioned, 'stockAvailable' => $availableStock, 'incoming' => 0, 'minimumThreshold' => 0, 'notificationThreshold' => 0];
             }
             else
             {
@@ -122,7 +166,7 @@ class ASDispoControlController extends AbstractController
 
         if($data != null)
         {
-            $asDispoDataRepository->create($data,$context);
+            $asDispoDataRepository->upsert($data,$context);
         }
 
         return new Response('',Response::HTTP_NO_CONTENT);
