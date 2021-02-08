@@ -3,7 +3,6 @@
 namespace ASDispositionControl\Subscriber;
 
 use ASDispositionControl\Core\Api\ASDispoControlController;
-use Shopware\Core\Content\Product\ProductEvents;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenEvent;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
