@@ -6,7 +6,7 @@
         "columnProductID": "Productname",
         "columnProductNumber": "Productnumber",
         "columnStock": "Stock",
-        "columnOutgoing": "Commissioned",
+        "columnCommissioned": "Commissioned",
         "columnStockAvailable": "Available Stock",
         "columnIncoming": "Open order volume",
         "columnMinimumThreshold": "Minimum Stock",

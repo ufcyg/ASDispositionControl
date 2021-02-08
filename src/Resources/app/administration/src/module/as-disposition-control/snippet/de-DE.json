@@ -6,7 +6,7 @@
         "columnProductID": "Produkt Name",
         "columnProductNumber": "Produkt Nummer",
         "columnStock": "Bestand",
-        "columnOutgoing": "In Kommissionierung",
+        "columnCommissioned": "In Kommissionierung",
         "columnStockAvailable": "Verfügbarer Bestand",
         "columnIncoming": "Offene Bestellungen",
         "columnMinimumThreshold": "Sicherheitsbestand",

@@ -40,9 +40,9 @@ Shopware.Component.register('as-disposition-control-overview', {
                 allowResize: true
             }
             ,{
-                property: 'outgoing',
-                dataIndex: 'outgoing',
-                label: this.$t('as-disposition-control.general.columnOutgoing'),
+                property: 'commissioned',
+                dataIndex: 'commissioned',
+                label: this.$t('as-disposition-control.general.columnCommissioned'),
                 allowResize: true
             }
             ,{

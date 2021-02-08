@@ -37,7 +37,7 @@ class DispoControlDataDefinition extends EntityDefinition
                 new StringField('product_name','productName'),
                 new StringField('product_number','productNumber'),
                 new IntField('stock','stock'),
-                new IntField('outgoing','outgoing'),
+                new IntField('commissioned','commissioned'),
                 new IntField('stock_available','stockAvailable'),
                 new IntField('incoming','incoming'),
                 new IntField('minimum_threshold','minimumThreshold'),

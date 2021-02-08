@@ -33,12 +33,13 @@ class ProductEventSubscriber implements EventSubscriberInterface
 
     public function onProductWrittenEvent(EntityWrittenEvent $event)
     {
+        $eventArray = $event->getWriteResults();
         $this->asDispoController->updateDispoControlData(Context::createDefaultContext());
     }
 
     public function onProductDeletedEvent(EntityWrittenEvent $event)
     {
         $eventArray = $event->getWriteResults();
-        $this->asDispoController->deleteDispoControlEntry($eventArray[0]->getPrimaryKey(),Context::createDefaultContext());
+        $this->asDispoController->deleteDispoControlEntry($eventArray[0]->getPrimaryKey(), Context::createDefaultContext());
     }
 }

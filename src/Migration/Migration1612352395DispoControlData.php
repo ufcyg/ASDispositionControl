@@ -20,7 +20,7 @@ class Migration1612352395DispoControlData extends MigrationStep
             `product_name`    VARCHAR(255) NOT NULL,
             `product_number`    VARCHAR(255) NOT NULL,
             `stock`    INTEGER NOT NULL,
-            `outgoing`    INTEGER NOT NULL,
+            `commissioned`    INTEGER NOT NULL,
             `stock_available`    INTEGER NOT NULL,
             `incoming`    INTEGER NOT NULL,
             `minimum_threshold`    INTEGER NOT NULL,

@@ -18,7 +18,7 @@ class DispoControlDataEntity extends Entity
     /** @var int */
     protected $stock;
     /** @var int */
-    protected $outgoing;
+    protected $commissioned;
     /** @var int */
     protected $stockAvailable;
     /** @var int */
@@ -73,13 +73,13 @@ class DispoControlDataEntity extends Entity
         return $this;
     }
 
-    /** Get the value of outgoing */ 
-    public function getOutgoing() { return $this->outgoing; }
+    /** Get the value of commissioned */ 
+    public function getCommissioned() { return $this->commissioned; }
 
-    /** Set the value of outgoing @return  self */ 
-    public function setOutgoing($outgoing)
+    /** Set the value of commissioned @return  self */ 
+    public function setCommissioned($commissioned)
     {
-        $this->outgoing = $outgoing;
+        $this->commissioned = $commissioned;
 
         return $this;
     }
