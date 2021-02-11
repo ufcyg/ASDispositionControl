@@ -82,7 +82,7 @@ class ASDispoControlController extends AbstractController
                     //notification to administrators
                     $recipientList = $this->systemConfigService->get('ASDispositionControl.config.notificationRecipients');
                     $recipientData = explode(';', $recipientList);
-                    $subject = 'Meldebestand unterschritten';
+                    $subject = "Meldebestand unterschritten: {$dataEntry->getProductNumber()}";
                     $message = "Der Meldebestand für<br><br>{$dataEntry->getProductNumber()}<br><br>wurde unterschritten.<br><br>Bitte nachbestellen.";
                     $this->sendNotification($subject,$message,$recipientData);
                 }
@@ -91,8 +91,8 @@ class ASDispoControlController extends AbstractController
                     //escalation
                     $recipientList = $this->systemConfigService->get('ASDispositionControl.config.notificationRecipientsEscalated');
                     $recipientData = explode(';', $recipientList);
-                    $subject = 'ESKALATION: Sicherheitsbestand unterschritten';
-                    $message = "Der Meldebestand für<br><br>{$dataEntry->getProductNumber()}<br><br>wurde unterschritten.<br><br>Nachbestellung dingend!<br><br>Derzeit verfügbar: {$availableStock}<br><br>Offene Bestellungen: {$incoming}";
+                    $subject = "ESKALATION: Sicherheitsbestand unterschritten: {$dataEntry->getProductNumber()}";
+                    $message = "Der Sicherheitsbestand für<br><br>{$dataEntry->getProductNumber()}<br><br>wurde unterschritten.<br><br>Nachbestellung dringend!<br><br>Derzeit verfügbar: {$availableStock}<br><br>Offene Bestellungen: {$incoming}";
                     $this->sendNotification($subject,$message,$recipientData);
                 }
             }
