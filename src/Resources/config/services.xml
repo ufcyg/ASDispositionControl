@@ -5,13 +5,10 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="ASDispositionControl\Core\Utilities\MailServiceHelper" public="true">      
-            <argument id="Shopware\Core\Content\MailTemplate\Service\MailService" type="service"/>
-        </service>
         
         <service id="ASDispositionControl\Core\Api\ASDispoControlController" public="true">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService" />
-            <argument type="service" id="ASDispositionControl\Core\Utilities\MailServiceHelper" />
+            <argument type="service" id="ASMailService\Core\MailServiceHelper" />
             <call method="setContainer">
                 <argument type="service" id="service_container" />
             </call>
@@ -36,5 +33,6 @@
             <argument type="service" id="ASDispositionControl\Core\Api\ASDispoControlController" />
             <tag name="messenger.message_handler" />
         </service>
+        
     </services>
 </container>

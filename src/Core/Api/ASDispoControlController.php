@@ -3,7 +3,7 @@
 namespace ASDispositionControl\Core\Api;
 
 use ASDispositionControl\Core\Content\DispoControlData\DispoControlDataEntity;
-use ASDispositionControl\Core\Utilities\MailServiceHelper;
+use ASMailService\Core\MailServiceHelper;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Content\Product\ProductEntity;
@@ -27,12 +27,14 @@ class ASDispoControlController extends AbstractController
     private $systemConfigService;
     /** @var MailServiceHelper $mailServiceHelper */
     private $mailServiceHelper;
-    
+    /** @var string $senderName */
+    private $senderName;
     public function __construct(SystemConfigService $systemConfigService,
                                 MailServiceHelper $mailServiceHelper)
     {
         $this->systemConfigService = $systemConfigService;
         $this->mailServiceHelper = $mailServiceHelper;
+        $this->senderName = 'Disposition Controle';
     }
 
     /**
@@ -42,17 +44,6 @@ class ASDispoControlController extends AbstractController
      */
     public function dummyRoute(Context $context): ?Response
     {
-        // $salesChannel = $this->systemConfigService->get('ASDispositionControl.config.fallbackSaleschannelNotification');
-        // $notification = "Hello from [$salesChannel]<br><br>This is a test.<br>Henlo";
-        // $this->mailServiceHelper->sendMyMail('iifsanalyzer@gmail.com', 'Melle Mellowski', $salesChannel,'TestSubject', $notification, 'TestSenderName');
-        // /** @var EntityRepositoryInterface $asDispoDataRepository */
-        // $asDispoDataRepository = $this->get('as_dispo_control_data.repository');
-        
-        // $data = [
-        //     ['productId' => 'asdwx123', 'outgoing' => 1, 'incoming' => 123, 'minimumThreshold' => 33, 'notificationThreshold' => 44],
-        // ];
-        
-        // $asDispoDataRepository->create($data,$context);
         
         return new Response('',Response::HTTP_NO_CONTENT);
     }
@@ -105,7 +96,7 @@ class ASDispoControlController extends AbstractController
     private function sendNotification(string $errorSubject, string $message, $recipientData)
     {
         $notificationSalesChannel = $this->systemConfigService->get('ASDispositionControl.config.fallbackSaleschannelNotification');
-
+        $recipients = null;
         for ($i = 0; $i< count($recipientData); $i +=2 )
         {
             $recipientName = $recipientData[$i];
@@ -116,8 +107,9 @@ class ASDispoControlController extends AbstractController
             {
                 continue;
             }
-            $this->mailServiceHelper->sendMyMail($recipientAddress, $recipientName, $notificationSalesChannel, $errorSubject, $message, 'DispositionControl');
+            $recipients[$recipientAddress] = $recipientName;
         }
+        $this->mailServiceHelper->sendMyMail($recipients, $notificationSalesChannel, $this->senderName, $errorSubject, $message,$message,['']);
     }
 
     /**

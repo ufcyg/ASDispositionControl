@@ -2,13 +2,16 @@
   "name": "as/disposition-control",
   "description": "Plugin for internal tracking of ordered materials and current stock.",
   "type": "shopware-platform-plugin",
-  "version": "v0.2.3",
+  "version": "v0.3.0",
   "license": "proprietary",
   "authors": [
     {
         "name": "A&S PMO"
     }
   ],
+  "require": {
+    "as/mail-service": "*.*.*"
+  },
   "autoload": {
     "psr-4": {
       "ASDispositionControl\\": "src/"
