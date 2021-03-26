@@ -4,15 +4,15 @@ namespace ASDispositionControl\ScheduledTask;
 
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTask;
 
-class DispoControlTask extends ScheduledTask
+class DispoControlNotificationTask extends ScheduledTask
 {
     public static function getTaskName(): string
     {
-        return 'as.dispo_control_task';
+        return 'as.dispo_control_notification_task';
     }
 
     public static function getDefaultInterval(): int
     {
-        return 30; // 1 minutes
+        return 86340; // 24 hours
     }
 }

@@ -34,17 +34,22 @@ class ProductEventSubscriber implements EventSubscriberInterface
     public function onProductWrittenEvent(EntityWrittenEvent $event)
     {
         $eventArray = $event->getWriteResults();
-        $this->asDispoController->updateDispoControlData(Context::createDefaultContext());
+        $this->asDispoController->upsertDispoControlEntry($eventArray[0]->getPrimaryKey(), Context::createDefaultContext());
     }
 
     public function onOrderWrittenEvent(EntityWrittenEvent $event)
     {
-        $eventArray = $event->getWriteResults();
-        $orderID = $eventArray[0]->getPrimaryKey();
-        $payload = $eventArray[0]->getPayload();
-        $newStateID = $payload['stateId'];
-        $this->asDispoController->updateOrderStatusChange($orderID,$newStateID);
-        $this->asDispoController->checkThresholds(Context::createDefaultContext());
+        // $this->asDispoController->initDispoControlData(Context::createDefaultContext());
+
+        // $eventArray = $event->getWriteResults();
+        // $orderID = $eventArray[0]->getPrimaryKey();
+        // $payload = $eventArray[0]->getPayload();
+        // if(array_key_exists('stateId', $payload))
+        // {
+        //     $newStateID = $payload['stateId'];
+        //     $this->asDispoController->updateOrderStatusChange($orderID,$newStateID);
+        //     $this->asDispoController->checkThresholds(Context::createDefaultContext());
+        // }
     }
 
     public function onProductDeletedEvent(EntityWrittenEvent $event)

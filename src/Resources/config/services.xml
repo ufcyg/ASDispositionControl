@@ -33,6 +33,15 @@
             <argument type="service" id="ASDispositionControl\Core\Api\ASDispoControlController" />
             <tag name="messenger.message_handler" />
         </service>
+
+        <service id="ASDispositionControl\ScheduledTask\DispoControlNotificationTask">
+            <tag name="shopware.scheduled.task" />
+        </service>
+        <service id="ASDispositionControl\ScheduledTask\DispoControlNotificationTaskHandler">
+            <argument type="service" id="scheduled_task.repository" />
+            <argument type="service" id="ASDispositionControl\Core\Api\ASDispoControlController" />
+            <tag name="messenger.message_handler" />
+        </service>
         
     </services>
 </container>

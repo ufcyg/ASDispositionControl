@@ -2,6 +2,7 @@
 
 namespace ASDispositionControl;
 
+use ASDispositionControl\Core\Api\ASDispoControlController;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
@@ -35,7 +36,9 @@ class ASDispositionControl extends Plugin
     /** @inheritDoc */
     public function activate(ActivateContext $activateContext): void
     {
-        $this->container->get('ASDispositionControl\Core\Api\ASDispoControlController')->updateDispoControlData($activateContext->getContext());
+        /** @var ASDispoControlController $dispoController */
+        $dispoController = $this->container->get('ASDispositionControl\Core\Api\ASDispoControlController');
+        $dispoController->updateDispoControlData($activateContext->getContext());
     }
 
     /** @inheritDoc */

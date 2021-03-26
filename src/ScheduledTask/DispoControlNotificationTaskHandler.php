@@ -8,7 +8,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\MessageQueue\ScheduledTask\ScheduledTaskHandler;
 
 
-class DispoControlTaskHandler extends ScheduledTaskHandler
+class DispoControlNotificationTaskHandler extends ScheduledTaskHandler
 {    
     /** @var ASDispoControlController $asDispoController */
     private $asDispoController;
@@ -21,11 +21,11 @@ class DispoControlTaskHandler extends ScheduledTaskHandler
 
     public static function getHandledMessages(): iterable
     {
-        return [ DispoControlTask::class ];
+        return [ DispoControlNotificationTask::class ];
     }
 
     public function run(): void
     {
-        $this->asDispoController->initDispoControlData(Context::createDefaultContext());
+        $this->asDispoController->checkThresholds(Context::createDefaultContext());
     }    
 }

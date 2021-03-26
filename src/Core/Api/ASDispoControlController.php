@@ -4,20 +4,16 @@ namespace ASDispositionControl\Core\Api;
 
 use ASDispositionControl\Core\Content\DispoControlData\DispoControlDataEntity;
 use ASMailService\Core\MailServiceHelper;
-use Shopware\Core\Checkout\Cart\Price\Struct\PriceCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Content\Product\ProductEntity;
-use Shopware\Core\Content\Rule\RuleEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Pricing\Price;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
-use Shopware\Core\Framework\Rule\Rule;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
@@ -155,8 +151,7 @@ class ASDispoControlController extends AbstractController
                 $commissioned = 0;
                 $availableStock = $this->calculateAvailableStock($productNumber, $context, $commissioned);
                 // update the entity
-                $updateData[] = ['id' => $entity->getId(), 'productName' => $productName, 'productNumber' => $productNumber, 'stock' => $productEntity->getStock(), 'commissioned' => $commissioned,'stockAvailable' => $availableStock];
-                $asDispoDataRepository->update($updateData, $context);
+                $data[] = ['id' => $entity->getId(), 'productName' => $productName, 'productNumber' => $productNumber, 'stock' => $productEntity->getStock(), 'commissioned' => $commissioned,'stockAvailable' => $availableStock];
             }            
         }
 
@@ -236,69 +231,58 @@ class ASDispoControlController extends AbstractController
         return new Response('',Response::HTTP_NO_CONTENT);
     }
 
-    public function updateOrderStatusChange(string $orderID, string $newStateID)
+    public function upsertDispoControlEntry(string $productId, Context $context): ?Response
     {
-        // get all line items for the given orderID
-        /** @var EntityRepositoryInterface $stateRepository */
-        $stateRepository = $this->get('state_machine_state.repository');
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('id',$newStateID));
-        $stateTechnicalName = $stateRepository->search($criteria,Context::createDefaultContext())->first()->getTechnicalName();
+
         /** @var EntityRepositoryInterface $asDispoDataRepository */
-        $orderLineItemRepository = $this->get('order_line_item.repository');
+        $productRepository = $this->get('product.repository');
+        /** @var EntityRepositoryInterface $asDispoDataRepository */
+        $asDispoDataRepository = $this->get('as_dispo_control_data.repository');
+
         $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('orderId',$orderID));
-        $lineItems = $orderLineItemRepository->search($criteria,Context::createDefaultContext());
+        $criteria->addFilter(new EqualsFilter('productId', $productId));
 
-        /** @var OrderLineItemEntity $lineItem */
-        foreach($lineItems as $lineItem)
-        {
-            if($lineItem->getIdentifier() == 'INTERNAL_DISCOUNT')
-                continue;
-            $productID = $lineItem->getProductId();
-            /** @var EntityRepositoryInterface $productRepository */
-            $productRepository = $this->get('product.repository');
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('id',$productID));
-            /** @var ProductEntity $product */
-            $product = $productRepository->search($criteria,Context::createDefaultContext())->first();
+        $searchResultDispo = $asDispoDataRepository->search($criteria,$context);
 
-            $productNumber = $product->getProductNumber();
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('id', $productId));
 
+        /** @var EntitySearchResult $searchResult */
+        $searchResult = $productRepository->search($criteria,$context);
+        /** @var ProductEntity $product */
+        $product = $searchResult->first();
 
-            /** @var EntityRepositoryInterface $asDispoDataRepository */
-            $asDispoDataRepository = $this->get('as_dispo_control_data.repository');
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('productNumber',$productNumber));
-            /** @var DispoControlDataEntity $dispoDataEntry */
-            $dispoDataEntry = $asDispoDataRepository->search($criteria,Context::createDefaultContext())->first();
+        $productNumber = $product->getProductNumber();
+        $productName = $product->getName();
+        $commissioned = 0;
+        $availableStock = $this->calculateAvailableStock($productNumber, $context, $commissioned);
 
-            $stock = $dispoDataEntry->getStock();
-            $commissioned = $dispoDataEntry->getCommissioned();
-            $availableStock = $dispoDataEntry->getStockAvailable();
-
-            $deltaQuantity = $lineItem->getQuantity();
-
-            switch($stateTechnicalName)
-            {
-                case 'completed':
-                    $stock -= $deltaQuantity;
-                    $commissioned -= $deltaQuantity;
-                break;
-                case 'in_progress':
-                break;
-                case 'cancelled':
-                    $stock += $deltaQuantity;
-                    $commissioned -= $deltaQuantity;
-                break;
-                case 'open':
-                    $availableStock -= $deltaQuantity;
-                    $commissioned += $deltaQuantity;
-                break;
-            }
-
-            $updateData[] = ['id' => $dispoDataEntry->getId(),  'stock' => $stock, 'commissioned' => $commissioned,'stockAvailable' => $availableStock];
-            $asDispoDataRepository->update($updateData, Context::createDefaultContext());
+        if (count($searchResultDispo) > 0) { // update existing entity
+            $data[] = ['id' => $searchResultDispo->first()->getId(),
+                    'notificationsActivated' => true,
+                    'productId' => $productId, 
+                    'productName' => $productName, 
+                    'productNumber' => $productNumber, 
+                    'stock' => $product->getStock(), 
+                    'commissioned' => $commissioned, 
+                    'stockAvailable' => $availableStock, 
+                    'incoming' => 0, 'minimumThreshold' => 0, 
+                    'notificationThreshold' => 0];
         }
+        else { // create new entity
+            $data[] = ['notificationsActivated' => true,
+                    'productId' => $productId, 
+                    'productName' => $productName, 
+                    'productNumber' => $productNumber, 
+                    'stock' => $product->getStock(), 
+                    'commissioned' => $commissioned, 
+                    'stockAvailable' => $availableStock, 
+                    'incoming' => 0, 'minimumThreshold' => 0, 
+                    'notificationThreshold' => 0];
+        }       
+
+        $asDispoDataRepository->upsert($data,$context);
+        
+        return new Response('',Response::HTTP_NO_CONTENT);
     }
 }
