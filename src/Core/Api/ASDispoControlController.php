@@ -4,16 +4,20 @@ namespace ASDispositionControl\Core\Api;
 
 use ASDispositionControl\Core\Content\DispoControlData\DispoControlDataEntity;
 use ASMailService\Core\MailServiceHelper;
+use Shopware\Core\Checkout\Cart\Price\Struct\PriceCollection;
 use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Content\Product\ProductEntity;
+use Shopware\Core\Content\Rule\RuleEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\Pricing\Price;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
+use Shopware\Core\Framework\Rule\Rule;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
@@ -234,6 +238,7 @@ class ASDispoControlController extends AbstractController
 
     public function updateOrderStatusChange(string $orderID, string $newStateID)
     {
+        // get all line items for the given orderID
         /** @var EntityRepositoryInterface $stateRepository */
         $stateRepository = $this->get('state_machine_state.repository');
         $criteria = new Criteria();
