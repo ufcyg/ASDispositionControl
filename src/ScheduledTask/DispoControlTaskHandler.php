@@ -26,6 +26,6 @@ class DispoControlTaskHandler extends ScheduledTaskHandler
 
     public function run(): void
     {
-        $this->asDispoController->initDispoControlData(Context::createDefaultContext());
+        $this->asDispoController->updateDispoControlData(Context::createDefaultContext());
     }    
 }
