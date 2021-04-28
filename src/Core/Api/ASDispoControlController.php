@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace ASDispositionControl\Core\Api;
 
@@ -29,9 +31,10 @@ class ASDispoControlController extends AbstractController
     private $mailServiceHelper;
     /** @var string $senderName */
     private $senderName;
-    public function __construct(SystemConfigService $systemConfigService,
-                                MailServiceHelper $mailServiceHelper)
-    {
+    public function __construct(
+        SystemConfigService $systemConfigService,
+        MailServiceHelper $mailServiceHelper
+    ) {
         $this->systemConfigService = $systemConfigService;
         $this->mailServiceHelper = $mailServiceHelper;
         $this->senderName = 'Disposition Controle';
@@ -44,8 +47,8 @@ class ASDispoControlController extends AbstractController
      */
     public function dummyRoute(Context $context): ?Response
     {
-        
-        return new Response('',Response::HTTP_NO_CONTENT);
+
+        return new Response('', Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -60,36 +63,32 @@ class ASDispoControlController extends AbstractController
         $criteria = new Criteria();
         $dataEntries = $asDispoDataRepository->search($criteria, $context);
         /** @var DispoControlDataEntity $dataEntry */
-        foreach($dataEntries as $dataEntry)
-        {
-            if($dataEntry->getNotificationsActivated())
-            {
+        foreach ($dataEntries as $dataEntry) {
+            if ($dataEntry->getNotificationsActivated()) {
                 $availableStock = $dataEntry->getStockAvailable();
                 $notificationThreshold = $dataEntry->getNotificationThreshold();
                 $absoluteMinimum = $dataEntry->getMinimumThreshold();
                 $incoming = $dataEntry->getIncoming();
-                if($notificationThreshold > ($availableStock + $incoming))
-                {
+                if ($notificationThreshold > ($availableStock + $incoming)) {
                     //notification to administrators
                     $recipientList = $this->systemConfigService->get('ASDispositionControl.config.notificationRecipients');
                     $recipientData = explode(';', $recipientList);
                     $subject = "Meldebestand unterschritten: {$dataEntry->getProductNumber()}";
                     $message = "Der Meldebestand für<br><br>{$dataEntry->getProductNumber()}<br><br>wurde unterschritten.<br><br>Bitte nachbestellen.";
-                    $this->sendNotification($subject,$message,$recipientData);
+                    $this->sendNotification($subject, $message, $recipientData);
                 }
-                if($absoluteMinimum > ($availableStock))
-                {
+                if ($absoluteMinimum > ($availableStock)) {
                     //escalation
                     $recipientList = $this->systemConfigService->get('ASDispositionControl.config.notificationRecipientsEscalated');
                     $recipientData = explode(';', $recipientList);
                     $subject = "ESKALATION: Sicherheitsbestand unterschritten: {$dataEntry->getProductNumber()}";
                     $message = "Der Sicherheitsbestand für<br><br>{$dataEntry->getProductNumber()}<br><br>wurde unterschritten.<br><br>Nachbestellung dringend!<br><br>Derzeit verfügbar: {$availableStock}<br><br>Offene Bestellungen: {$incoming}";
-                    $this->sendNotification($subject,$message,$recipientData);
+                    $this->sendNotification($subject, $message, $recipientData);
                 }
             }
         }
 
-        return new Response('',Response::HTTP_NO_CONTENT);
+        return new Response('', Response::HTTP_NO_CONTENT);
     }
 
     /* Sends an eMail to every entry in the plugin configuration inside the administration frontend */
@@ -97,19 +96,17 @@ class ASDispoControlController extends AbstractController
     {
         $notificationSalesChannel = $this->systemConfigService->get('ASDispositionControl.config.fallbackSaleschannelNotification');
         $recipients = null;
-        for ($i = 0; $i< count($recipientData); $i +=2 )
-        {
+        for ($i = 0; $i < count($recipientData); $i += 2) {
             $recipientName = $recipientData[$i];
-            $recipientAddress = $recipientData[$i+1];
+            $recipientAddress = $recipientData[$i + 1];
 
             $mailCheck = explode('@', $recipientAddress);
-            if(count($mailCheck) != 2)
-            {
+            if (count($mailCheck) != 2) {
                 continue;
             }
             $recipients[$recipientAddress] = $recipientName;
         }
-        $this->mailServiceHelper->sendMyMail($recipients, $notificationSalesChannel, $this->senderName, $errorSubject, $message,$message,['']);
+        $this->mailServiceHelper->sendMyMail($recipients, $notificationSalesChannel, $this->senderName, $errorSubject, $message, $message, ['']);
     }
 
     /**
@@ -125,42 +122,37 @@ class ASDispoControlController extends AbstractController
         $productRepository = $this->get('product.repository');
 
 
-        $productSearchResult = $productRepository->search(new Criteria(),$context);
+        $productSearchResult = $productRepository->search(new Criteria(), $context);
 
         $data = null;
         /** @var ProductEntity $productEntity */
-        foreach($productSearchResult as $productEntity)
-        {
+        foreach ($productSearchResult as $productEntity) {
             $productId = $productEntity->getId();
             $productName = $productEntity->getName();
             $productNumber = $productEntity->getProductNumber();
             $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('productId',$productId));
+            $criteria->addFilter(new EqualsFilter('productId', $productId));
 
-            $dispoDataSearchResult = $asDispoDataRepository->search($criteria,$context);
-            if(count($dispoDataSearchResult) === 0)
-            {
+            $dispoDataSearchResult = $asDispoDataRepository->search($criteria, $context);
+            if (count($dispoDataSearchResult) === 0) {
                 $commissioned = 0;
                 $availableStock = $this->calculateAvailableStock($productNumber, $context, $commissioned);
                 // product has no equivalent entry in the dispo data table
-                $data[] = ['notificationsActivated' => true,'productId' => $productId, 'productName' => $productName, 'productNumber' => $productNumber, 'stock' => $productEntity->getStock(), 'commissioned' => $commissioned, 'stockAvailable' => $availableStock, 'incoming' => 0, 'minimumThreshold' => 0, 'notificationThreshold' => 0];
-            }
-            else
-            {
+                $data[] = ['notificationsActivated' => true, 'productId' => $productId, 'productName' => $productName, 'productNumber' => $productNumber, 'stock' => $productEntity->getStock(), 'commissioned' => $commissioned, 'stockAvailable' => $availableStock, 'incoming' => 0, 'minimumThreshold' => 0, 'notificationThreshold' => 0];
+            } else {
                 $entity = $dispoDataSearchResult->first();
                 $commissioned = 0;
                 $availableStock = $this->calculateAvailableStock($productNumber, $context, $commissioned);
                 // update the entity
-                $data[] = ['id' => $entity->getId(), 'productName' => $productName, 'productNumber' => $productNumber, 'stock' => $productEntity->getStock(), 'commissioned' => $commissioned,'stockAvailable' => $availableStock];
-            }            
+                $data[] = ['id' => $entity->getId(), 'productName' => $productName, 'productNumber' => $productNumber, 'stock' => $productEntity->getStock(), 'commissioned' => $commissioned, 'stockAvailable' => $availableStock];
+            }
         }
 
-        if($data != null)
-        {
-            $asDispoDataRepository->upsert($data,$context);
+        if ($data != null) {
+            $asDispoDataRepository->upsert($data, $context);
         }
 
-        return new Response('',Response::HTTP_NO_CONTENT);
+        return new Response('', Response::HTTP_NO_CONTENT);
     }
 
     private function calculateAvailableStock($articleNumber, $context, int &$commissioned): int
@@ -182,7 +174,7 @@ class ASDispoControlController extends AbstractController
         $orders = $orderRepository->search($criteria, $context);
 
         /** @var OrderEntity $order */
-        foreach($orders as $order)                                                          // iterate through all orders
+        foreach ($orders as $order)                                                          // iterate through all orders
         {
             $orderState = $order->getStateMachineState()->getTechnicalName();
             if ($orderState == 'completed' || $orderState == 'cancelled')                   // skip order if it is not relevant for the available stock
@@ -194,19 +186,18 @@ class ASDispoControlController extends AbstractController
 
             $lineItems = $orderLineItemRepository->search($criteria, $context);             // get all line item entries for this order
             /** @var OrderLineItemEntity $lineItem */
-            foreach($lineItems as $lineItem)                                                // iterate through all line items of this order
+            foreach ($lineItems as $lineItem)                                                // iterate through all line items of this order
             {
-                if($lineItem->getIdentifier() == 'INTERNAL_DISCOUNT')
+                if ($lineItem->getIdentifier() == 'INTERNAL_DISCOUNT')
                     continue;
 
                 $lineItemProductID = $lineItem->getProductId();
-                if($product->getId() == $lineItemProductID)                                 // if looked at product id is the same as the line item product id
+                if ($product->getId() == $lineItemProductID)                                 // if looked at product id is the same as the line item product id
                 {
                     $productStock -= $lineItem->getQuantity();                              // substract quantity of line item from stock to get available stock
                     $commissioned += $lineItem->getQuantity();
                 }
             }
-
         }
         return $productStock;
     }
@@ -219,16 +210,15 @@ class ASDispoControlController extends AbstractController
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('productId', $productID));
 
-        $searchResult = $asDispoDataRepository->search($criteria,$context);
-        if(count($searchResult) > 0)
-        {
+        $searchResult = $asDispoDataRepository->search($criteria, $context);
+        if (count($searchResult) > 0) {
             $entity = $searchResult->first();
             $asDispoDataRepository->delete([
                 ['id' => $entity->getId()],
-            ],$context);
+            ], $context);
         }
 
-        return new Response('',Response::HTTP_NO_CONTENT);
+        return new Response('', Response::HTTP_NO_CONTENT);
     }
 
     public function upsertDispoControlEntry(string $productId, Context $context): ?Response
@@ -242,13 +232,13 @@ class ASDispoControlController extends AbstractController
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('productId', $productId));
 
-        $searchResultDispo = $asDispoDataRepository->search($criteria,$context);
+        $searchResultDispo = $asDispoDataRepository->search($criteria, $context);
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('id', $productId));
 
         /** @var EntitySearchResult $searchResult */
-        $searchResult = $productRepository->search($criteria,$context);
+        $searchResult = $productRepository->search($criteria, $context);
         /** @var ProductEntity $product */
         $product = $searchResult->first();
 
@@ -258,31 +248,34 @@ class ASDispoControlController extends AbstractController
         $availableStock = $this->calculateAvailableStock($productNumber, $context, $commissioned);
 
         if (count($searchResultDispo) > 0) { // update existing entity
-            $data[] = ['id' => $searchResultDispo->first()->getId(),
-                    'notificationsActivated' => true,
-                    'productId' => $productId, 
-                    'productName' => $productName, 
-                    'productNumber' => $productNumber, 
-                    'stock' => $product->getStock(), 
-                    'commissioned' => $commissioned, 
-                    'stockAvailable' => $availableStock, 
-                    'incoming' => 0, 'minimumThreshold' => 0, 
-                    'notificationThreshold' => 0];
+            $data[] = [
+                'id' => $searchResultDispo->first()->getId(),
+                'notificationsActivated' => true,
+                'productId' => $productId,
+                'productName' => $productName,
+                'productNumber' => $productNumber,
+                'stock' => $product->getStock(),
+                'commissioned' => $commissioned,
+                'stockAvailable' => $availableStock,
+                'incoming' => 0, 'minimumThreshold' => 0,
+                'notificationThreshold' => 0
+            ];
+        } else { // create new entity
+            $data[] = [
+                'notificationsActivated' => true,
+                'productId' => $productId,
+                'productName' => $productName,
+                'productNumber' => $productNumber,
+                'stock' => $product->getStock(),
+                'commissioned' => $commissioned,
+                'stockAvailable' => $availableStock,
+                'incoming' => 0, 'minimumThreshold' => 0,
+                'notificationThreshold' => 0
+            ];
         }
-        else { // create new entity
-            $data[] = ['notificationsActivated' => true,
-                    'productId' => $productId, 
-                    'productName' => $productName, 
-                    'productNumber' => $productNumber, 
-                    'stock' => $product->getStock(), 
-                    'commissioned' => $commissioned, 
-                    'stockAvailable' => $availableStock, 
-                    'incoming' => 0, 'minimumThreshold' => 0, 
-                    'notificationThreshold' => 0];
-        }       
 
-        $asDispoDataRepository->upsert($data,$context);
-        
-        return new Response('',Response::HTTP_NO_CONTENT);
+        $asDispoDataRepository->upsert($data, $context);
+
+        return new Response('', Response::HTTP_NO_CONTENT);
     }
 }

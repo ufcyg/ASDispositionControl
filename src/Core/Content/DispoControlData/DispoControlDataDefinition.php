@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace ASDispositionControl\Core\Content\DispoControlData;
 
@@ -33,17 +35,17 @@ class DispoControlDataDefinition extends EntityDefinition
     {
         return new FieldCollection(
             [
-                (new IdField('id','id'))->addFlags(new Required(), new PrimaryKey()),
-                new BoolField('notifications_activated','notificationsActivated'),
-                new StringField('product_id','productId'),
-                new StringField('product_name','productName'),
-                new StringField('product_number','productNumber'),
-                new IntField('stock','stock'),
-                new IntField('commissioned','commissioned'),
-                new IntField('stock_available','stockAvailable'),
-                new IntField('incoming','incoming'),
-                new IntField('minimum_threshold','minimumThreshold'),
-                new IntField('notification_threshold','notificationThreshold')
+                (new IdField('id', 'id'))->addFlags(new Required(), new PrimaryKey()),
+                new BoolField('notifications_activated', 'notificationsActivated'),
+                new StringField('product_id', 'productId'),
+                new StringField('product_name', 'productName'),
+                new StringField('product_number', 'productNumber'),
+                new IntField('stock', 'stock'),
+                new IntField('commissioned', 'commissioned'),
+                new IntField('stock_available', 'stockAvailable'),
+                new IntField('incoming', 'incoming'),
+                new IntField('minimum_threshold', 'minimumThreshold'),
+                new IntField('notification_threshold', 'notificationThreshold')
             ]
         );
     }

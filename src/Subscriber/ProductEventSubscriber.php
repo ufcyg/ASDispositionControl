@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace ASDispositionControl\Subscriber;
 
@@ -15,9 +17,10 @@ class ProductEventSubscriber implements EventSubscriberInterface
     /** @var ASDispoControlController $asDispoController */
     private $asDispoController;
 
-    public function __construct(SystemConfigService $systemConfigService,
-                                ASDispoControlController $asDispoController)
-    {
+    public function __construct(
+        SystemConfigService $systemConfigService,
+        ASDispoControlController $asDispoController
+    ) {
         $this->systemConfigService = $systemConfigService;
         $this->asDispoController = $asDispoController;
     }

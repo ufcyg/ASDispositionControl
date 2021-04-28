@@ -34,45 +34,45 @@ Shopware.Component.register('as-disposition-control-overview', {
                 allowResize: true,
                 primary: true
             }
-            ,{
+                , {
                 property: 'productNumber',
                 dataIndex: 'productNumber',
                 label: this.$t('as-disposition-control.general.columnProductNumber'),
                 allowResize: true
             }
-            ,{
+                , {
                 property: 'stock',
                 dataIndex: 'stock',
                 label: this.$t('as-disposition-control.general.columnStock'),
                 allowResize: true
             }
-            ,{
+                , {
                 property: 'commissioned',
                 dataIndex: 'commissioned',
                 label: this.$t('as-disposition-control.general.columnCommissioned'),
                 allowResize: true
             }
-            ,{
+                , {
                 property: 'stockAvailable',
                 dataIndex: 'stockAvailable',
                 label: this.$t('as-disposition-control.general.columnStockAvailable'),
                 allowResize: true
             }
-            ,{
+                , {
                 property: 'incoming',
                 dataIndex: 'incoming',
                 label: this.$t('as-disposition-control.general.columnIncoming'),
                 allowResize: true,
                 inlineEdit: 'number'
             }
-            ,{
+                , {
                 property: 'notificationThreshold',
                 dataIndex: 'notificationThreshold',
                 label: this.$t('as-disposition-control.general.columnNotificationThreshold'),
                 allowResize: true,
                 inlineEdit: 'number'
             }
-            ,{
+                , {
                 property: 'minimumThreshold',
                 dataIndex: 'minimumThreshold',
                 label: this.$t('as-disposition-control.general.columnMinimumThreshold'),
@@ -84,7 +84,7 @@ Shopware.Component.register('as-disposition-control-overview', {
     },
     created() {
         this.repository = this.repositoryFactory.create('as_dispo_control_data')
-    
+
         this.repository
             .search(new Criteria(), Shopware.Context.api)
             .then((result) => {

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace ASDispositionControl\Core\Content\DispoControlData;
 
@@ -8,7 +10,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 class DispoControlDataEntity extends Entity
 {
     use EntityIdTrait;
-    
+
     /** @var bool */
     protected $notificationsActivated;
     /** @var string */
@@ -31,10 +33,13 @@ class DispoControlDataEntity extends Entity
     protected $notificationThreshold;
 
 
-    /** Get the value of notificationsActivated */ 
-    public function getNotificationsActivated() { return $this->notificationsActivated; }
+    /** Get the value of notificationsActivated */
+    public function getNotificationsActivated()
+    {
+        return $this->notificationsActivated;
+    }
 
-    /** Set the value of notificationsActivated @return  self */ 
+    /** Set the value of notificationsActivated @return  self */
     public function setNotificationsActivated($notificationsActivated)
     {
         $this->notificationsActivated = $notificationsActivated;
@@ -42,10 +47,13 @@ class DispoControlDataEntity extends Entity
         return $this;
     }
 
-    /** Get the value of productId */ 
-    public function getProductId() { return $this->productId; }
+    /** Get the value of productId */
+    public function getProductId()
+    {
+        return $this->productId;
+    }
 
-    /** Set the value of productId  @return  self */ 
+    /** Set the value of productId  @return  self */
     public function setProductId($productId)
     {
         $this->productId = $productId;
@@ -53,10 +61,13 @@ class DispoControlDataEntity extends Entity
         return $this;
     }
 
-    /** Get the value of productName */ 
-    public function getProductName() { return $this->productName; }
+    /** Get the value of productName */
+    public function getProductName()
+    {
+        return $this->productName;
+    }
 
-    /** Set the value of productName @return  self */ 
+    /** Set the value of productName @return  self */
     public function setProductName($productName)
     {
         $this->productName = $productName;
@@ -64,10 +75,13 @@ class DispoControlDataEntity extends Entity
         return $this;
     }
 
-    /** Get the value of productNumber */ 
-    public function getProductNumber() { return $this->productNumber; }
+    /** Get the value of productNumber */
+    public function getProductNumber()
+    {
+        return $this->productNumber;
+    }
 
-    /** Set the value of productNumber @return  self */ 
+    /** Set the value of productNumber @return  self */
     public function setProductNumber($productNumber)
     {
         $this->productNumber = $productNumber;
@@ -75,10 +89,13 @@ class DispoControlDataEntity extends Entity
         return $this;
     }
 
-    /** Get the value of stock */ 
-    public function getStock() { return $this->stock; }
+    /** Get the value of stock */
+    public function getStock()
+    {
+        return $this->stock;
+    }
 
-    /** Set the value of stock @return  self */ 
+    /** Set the value of stock @return  self */
     public function setStock($stock)
     {
         $this->stock = $stock;
@@ -86,10 +103,13 @@ class DispoControlDataEntity extends Entity
         return $this;
     }
 
-    /** Get the value of commissioned */ 
-    public function getCommissioned() { return $this->commissioned; }
+    /** Get the value of commissioned */
+    public function getCommissioned()
+    {
+        return $this->commissioned;
+    }
 
-    /** Set the value of commissioned @return  self */ 
+    /** Set the value of commissioned @return  self */
     public function setCommissioned($commissioned)
     {
         $this->commissioned = $commissioned;
@@ -97,10 +117,13 @@ class DispoControlDataEntity extends Entity
         return $this;
     }
 
-    /** Get the value of stockAvailable */ 
-    public function getStockAvailable() { return $this->stockAvailable; }
+    /** Get the value of stockAvailable */
+    public function getStockAvailable()
+    {
+        return $this->stockAvailable;
+    }
 
-    /** Set the value of stockAvailable @return  self */ 
+    /** Set the value of stockAvailable @return  self */
     public function setStockAvailable($stockAvailable)
     {
         $this->stockAvailable = $stockAvailable;
@@ -108,10 +131,13 @@ class DispoControlDataEntity extends Entity
         return $this;
     }
 
-    /** Get the value of incoming */ 
-    public function getIncoming() { return $this->incoming; }
+    /** Get the value of incoming */
+    public function getIncoming()
+    {
+        return $this->incoming;
+    }
 
-    /** Set the value of incoming @return  self */ 
+    /** Set the value of incoming @return  self */
     public function setIncoming($incoming)
     {
         $this->incoming = $incoming;
@@ -119,10 +145,13 @@ class DispoControlDataEntity extends Entity
         return $this;
     }
 
-    /** Get the value of minimumThreshold */ 
-    public function getMinimumThreshold() { return $this->minimumThreshold; }
+    /** Get the value of minimumThreshold */
+    public function getMinimumThreshold()
+    {
+        return $this->minimumThreshold;
+    }
 
-    /** Set the value of minimumThreshold @return  self */ 
+    /** Set the value of minimumThreshold @return  self */
     public function setMinimumThreshold($minimumThreshold)
     {
         $this->minimumThreshold = $minimumThreshold;
@@ -130,10 +159,13 @@ class DispoControlDataEntity extends Entity
         return $this;
     }
 
-    /** Get the value of notificationThreshold */ 
-    public function getNotificationThreshold() { return $this->notificationThreshold; }
+    /** Get the value of notificationThreshold */
+    public function getNotificationThreshold()
+    {
+        return $this->notificationThreshold;
+    }
 
-    /** Set the value of notificationThreshold @return  self */ 
+    /** Set the value of notificationThreshold @return  self */
     public function setNotificationThreshold($notificationThreshold)
     {
         $this->notificationThreshold = $notificationThreshold;
