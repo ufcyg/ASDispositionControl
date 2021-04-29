@@ -76,29 +76,27 @@ class ASDispoControlController extends AbstractController
                     $sendMessageAdmin = true;
                     //notification to administrators
                     $adminSubject .= "{$dataEntry->getProductNumber()}, ";
-                    $adminMessage .= "{$dataEntry->getProductNumber()}<br><br>wurde unterschritten.<br>Bitte nachbestellen.<br><br>";
-                    
+                    $adminMessage .= "{$dataEntry->getProductNumber()}, ";
                 }
                 if ($absoluteMinimum > ($availableStock)) {
                     $sendMessageEscalation = true;
                     //escalation
                     $escalationSubject .= "{$dataEntry->getProductNumber()}, ";
                     $escalationMessage .= "{$dataEntry->getProductNumber()} wurde unterschritten. Nachbestellung dringend!<br>Derzeit verfügbar: {$availableStock}<br>Offene Bestellungen: {$incoming}<br><br>";
-                    
                 }
-                if($sendMessageAdmin){
-                    $recipientList = $this->systemConfigService->get('ASDispositionControl.config.notificationRecipients');
-                    $recipientData = explode(';', $recipientList);
-                    $this->sendNotification(rtrim(', ', $adminSubject), $adminMessage, $recipientData);
-                }
-
-                if($sendMessageEscalation){
-                    $recipientList = $this->systemConfigService->get('ASDispositionControl.config.notificationRecipientsEscalated');
-                    $recipientData = explode(';', $recipientList);
-                    $this->sendNotification(rtrim(', ', $escalationSubject), $escalationMessage, $recipientData);
-                }
-
             }
+        }
+        if ($sendMessageAdmin) {
+            $adminMessage = rtrim($adminMessage, ', ');
+            $adminMessage .= '<br><br>wurde unterschritten.<br>Bitte nachbestellen.';
+            $recipientList = $this->systemConfigService->get('ASDispositionControl.config.notificationRecipients');
+            $recipientData = explode(';', $recipientList);
+            $this->sendNotification(rtrim($adminSubject, ', '), $adminMessage, $recipientData);
+        }
+        if ($sendMessageEscalation) {
+            $recipientList = $this->systemConfigService->get('ASDispositionControl.config.notificationRecipientsEscalated');
+            $recipientData = explode(';', $recipientList);
+            $this->sendNotification(rtrim($escalationSubject, ', '), $escalationMessage, $recipientData);
         }
 
         return new Response('', Response::HTTP_NO_CONTENT);

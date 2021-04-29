@@ -28,7 +28,7 @@ Shopware.Module.register('as-disposition-control', {
         color: '#0400ff',
         path: 'as.disposition.control.overview',
         icon: 'default-arrow-switch',
-        position: 101,
+        position: 11,
         parent: 'sw-order'
     }],
 });
