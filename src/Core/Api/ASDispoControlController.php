@@ -58,10 +58,13 @@ class ASDispoControlController extends AbstractController
      */
     public function checkThresholds(Context $context): ?Response
     {
-        /** @var EntityRepositoryInterface $asDispoDataRepository */
-        $asDispoDataRepository = $this->get('as_dispo_control_data.repository');
-        $criteria = new Criteria();
-        $dataEntries = $asDispoDataRepository->search($criteria, $context);
+        $sendMessageAdmin = false;
+        $sendMessageEscalation = false;
+        $adminSubject = 'Meldebestand unterschritten: ';
+        $adminMessage = 'Der Meldebestand für<br><br>';
+        $escalationSubject = 'ESKALATION: Sicherheitsbestand unterschritten: ';
+        $escalationMessage = 'Der Sicherheitsbestand für<br><br>';
+        $dataEntries = $this->getAllEntitiesOfRepository($this->get('as_dispo_control_data.repository'), $context);
         /** @var DispoControlDataEntity $dataEntry */
         foreach ($dataEntries as $dataEntry) {
             if ($dataEntry->getNotificationsActivated()) {
@@ -70,21 +73,31 @@ class ASDispoControlController extends AbstractController
                 $absoluteMinimum = $dataEntry->getMinimumThreshold();
                 $incoming = $dataEntry->getIncoming();
                 if ($notificationThreshold > ($availableStock + $incoming)) {
+                    $sendMessageAdmin = true;
                     //notification to administrators
-                    $recipientList = $this->systemConfigService->get('ASDispositionControl.config.notificationRecipients');
-                    $recipientData = explode(';', $recipientList);
-                    $subject = "Meldebestand unterschritten: {$dataEntry->getProductNumber()}";
-                    $message = "Der Meldebestand für<br><br>{$dataEntry->getProductNumber()}<br><br>wurde unterschritten.<br><br>Bitte nachbestellen.";
-                    $this->sendNotification($subject, $message, $recipientData);
+                    $adminSubject .= "{$dataEntry->getProductNumber()}, ";
+                    $adminMessage .= "{$dataEntry->getProductNumber()}<br><br>wurde unterschritten.<br>Bitte nachbestellen.<br><br>";
+                    
                 }
                 if ($absoluteMinimum > ($availableStock)) {
+                    $sendMessageEscalation = true;
                     //escalation
+                    $escalationSubject .= "{$dataEntry->getProductNumber()}, ";
+                    $escalationMessage .= "{$dataEntry->getProductNumber()} wurde unterschritten. Nachbestellung dringend!<br>Derzeit verfügbar: {$availableStock}<br>Offene Bestellungen: {$incoming}<br><br>";
+                    
+                }
+                if($sendMessageAdmin){
+                    $recipientList = $this->systemConfigService->get('ASDispositionControl.config.notificationRecipients');
+                    $recipientData = explode(';', $recipientList);
+                    $this->sendNotification(rtrim(', ', $adminSubject), $adminMessage, $recipientData);
+                }
+
+                if($sendMessageEscalation){
                     $recipientList = $this->systemConfigService->get('ASDispositionControl.config.notificationRecipientsEscalated');
                     $recipientData = explode(';', $recipientList);
-                    $subject = "ESKALATION: Sicherheitsbestand unterschritten: {$dataEntry->getProductNumber()}";
-                    $message = "Der Sicherheitsbestand für<br><br>{$dataEntry->getProductNumber()}<br><br>wurde unterschritten.<br><br>Nachbestellung dringend!<br><br>Derzeit verfügbar: {$availableStock}<br><br>Offene Bestellungen: {$incoming}";
-                    $this->sendNotification($subject, $message, $recipientData);
+                    $this->sendNotification(rtrim(', ', $escalationSubject), $escalationMessage, $recipientData);
                 }
+
             }
         }
 
@@ -277,5 +290,38 @@ class ASDispoControlController extends AbstractController
         $asDispoDataRepository->upsert($data, $context);
 
         return new Response('', Response::HTTP_NO_CONTENT);
+    }
+
+
+
+    public function getAllEntitiesOfRepository(EntityRepositoryInterface $repository, Context $context): ?EntitySearchResult
+    {
+        /** @var Criteria $criteria */
+        $criteria = new Criteria();
+        /** @var EntitySearchResult $result */
+        $result = $repository->search($criteria, $context);
+
+        return $result;
+    }
+    public function getFilteredEntitiesOfRepository(EntityRepositoryInterface $repository, string $fieldName, $fieldValue, Context $context): ?EntitySearchResult
+    {
+        /** @var Criteria $criteria */
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter($fieldName, $fieldValue));
+        /** @var EntitySearchResult $result */
+        $result = $repository->search($criteria, $context);
+
+        return $result;
+    }
+    public function entityExistsInRepositoryCk(EntityRepositoryInterface $repository, string $fieldName, $fieldValue, Context $context): bool
+    {
+        $criteria = new Criteria();
+
+        $criteria->addFilter(new EqualsFilter($fieldName, $fieldValue));
+
+        /** @var EntitySearchResult $searchResult */
+        $searchResult = $repository->search($criteria, $context);
+
+        return count($searchResult) != 0 ? true : false;
     }
 }
