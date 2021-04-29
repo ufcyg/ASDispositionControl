@@ -200,11 +200,12 @@ class ASDispoControlController extends AbstractController
 
     public function upsertDispoControlEntry(string $productId, Context $context): ?Response
     {
+        $data = null;
         /** @var EntityRepositoryInterface $asDispoDataRepository */
         $asDispoDataRepository = $this->get('as_dispo_control_data.repository');
         $searchResultDispo = $this->getFilteredEntitiesOfRepository($asDispoDataRepository, 'productId', $productId, $context);
         /** @var ProductEntity $product */
-        $product = $this->getFilteredEntitiesOfRepository($this->get('product.repository'), 'id', $productId, $context);
+        $product = $this->getFilteredEntitiesOfRepository($this->get('product.repository'), 'id', $productId, $context)->first();
 
         $productNumber = $product->getProductNumber();
         $productName = $product->getName();
@@ -230,13 +231,13 @@ class ASDispoControlController extends AbstractController
                 'stock' => $product->getStock(),
                 'commissioned' => $commissioned,
                 'stockAvailable' => $availableStock,
-                'incoming' => 0, 
+                'incoming' => 0,
                 'minimumThreshold' => 0,
                 'notificationThreshold' => 0
             ];
         }
-
-        $asDispoDataRepository->upsert($data, $context);
+        if($data != null)
+            $asDispoDataRepository->upsert($data, $context);
 
         return new Response('', Response::HTTP_NO_CONTENT);
     }
