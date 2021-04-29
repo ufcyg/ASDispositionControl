@@ -217,17 +217,9 @@ class ASDispoControlController extends AbstractController
     {
         /** @var EntityRepositoryInterface $asDispoDataRepository */
         $asDispoDataRepository = $this->get('as_dispo_control_data.repository');
-
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('productId', $productID));
-
-        $searchResult = $asDispoDataRepository->search($criteria, $context);
-        if (count($searchResult) > 0) {
-            $entity = $searchResult->first();
-            $asDispoDataRepository->delete([
-                ['id' => $entity->getId()],
-            ], $context);
-        }
+        /** @var DispoControlDataEntity $entity */
+        $entity = $this->getFilteredEntitiesOfRepository($asDispoDataRepository, 'productId', $productID, $context)->first();
+        $asDispoDataRepository->delete([['id' => $entity->getId()]], $context);
 
         return new Response('', Response::HTTP_NO_CONTENT);
     }
