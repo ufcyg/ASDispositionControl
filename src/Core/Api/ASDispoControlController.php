@@ -129,32 +129,21 @@ class ASDispoControlController extends AbstractController
     {
         /** @var EntityRepositoryInterface $asDispoDataRepository */
         $asDispoDataRepository = $this->get('as_dispo_control_data.repository');
-        /** @var EntityRepositoryInterface $productRepository */
-        $productRepository = $this->get('product.repository');
-
-
-        $productSearchResult = $productRepository->search(new Criteria(), $context);
-
+        $products = $this->getAllEntitiesOfRepository($this->get('product.repository'), $context);
         $data = null;
         /** @var ProductEntity $productEntity */
-        foreach ($productSearchResult as $productEntity) {
-            $productId = $productEntity->getId();
+        foreach ($products as $productId => $productEntity) {
             $productName = $productEntity->getName();
             $productNumber = $productEntity->getProductNumber();
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('productId', $productId));
-
-            $dispoDataSearchResult = $asDispoDataRepository->search($criteria, $context);
-            if (count($dispoDataSearchResult) === 0) {
+            $dispoDataSearchResult = $this->getFilteredEntitiesOfRepository($asDispoDataRepository, 'productId', $productId, $context);
+            if (count($dispoDataSearchResult) === 0) { // product has no equivalent entry in the dispo data table
                 $commissioned = 0;
                 $availableStock = $this->calculateAvailableStock($productNumber, $context, $commissioned);
-                // product has no equivalent entry in the dispo data table
                 $data[] = ['notificationsActivated' => true, 'productId' => $productId, 'productName' => $productName, 'productNumber' => $productNumber, 'stock' => $productEntity->getStock(), 'commissioned' => $commissioned, 'stockAvailable' => $availableStock, 'incoming' => 0, 'minimumThreshold' => 0, 'notificationThreshold' => 0];
-            } else {
+            } else { // update the entity
                 $entity = $dispoDataSearchResult->first();
                 $commissioned = 0;
                 $availableStock = $this->calculateAvailableStock($productNumber, $context, $commissioned);
-                // update the entity
                 $data[] = ['id' => $entity->getId(), 'productName' => $productName, 'productNumber' => $productNumber, 'stock' => $productEntity->getStock(), 'commissioned' => $commissioned, 'stockAvailable' => $availableStock];
             }
         }
@@ -166,24 +155,13 @@ class ASDispoControlController extends AbstractController
         return new Response('', Response::HTTP_NO_CONTENT);
     }
 
-    private function calculateAvailableStock($articleNumber, $context, int &$commissioned): int
+    private function calculateAvailableStock($productNumber, $context, int &$commissioned): int
     {
-        /** @var EntityRepositoryInterface $orderLineItemRepository */
-        $productsRepository = $this->container->get('product.repository');                  // get products repository
-        $criteria = new Criteria();                                                         // create new $criteria
-        $criteria->addFilter(new EqualsFilter('productNumber', $articleNumber));            // add filter for product we are currently looking for stock / available stock
-        /** @var ProductEntity */
-        $product = $productsRepository->search($criteria, $context)->first();               // get the product entity with all the infos
+        $product = $this->getFilteredEntitiesOfRepository($this->container->get('product.repository'), 'productNumber', $productNumber, $context)->first();
         $productStock = $product->getStock();                                               // get the current stock, we will substract line item entries from this one and return the value at the end
-        /** @var EntityRepositoryInterface $orderLineItemRepository */
-        $orderLineItemRepository = $this->container->get('order_line_item.repository');
-        /** @var EntityRepositoryInterface $orderRepository */
-        $orderRepository = $this->container->get('order.repository');
-        $criteria = new Criteria();
 
         /** @var EntitySearchResult $orders */
-        $orders = $orderRepository->search($criteria, $context);
-
+        $orders = $this->getAllEntitiesOfRepository($this->container->get('order.repository'), $context);
         /** @var OrderEntity $order */
         foreach ($orders as $order)                                                          // iterate through all orders
         {
@@ -191,11 +169,7 @@ class ASDispoControlController extends AbstractController
             if ($orderState == 'completed' || $orderState == 'cancelled')                   // skip order if it is not relevant for the available stock
                 continue;
 
-            $orderID = $order->getId();
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('orderId', $orderID));
-
-            $lineItems = $orderLineItemRepository->search($criteria, $context);             // get all line item entries for this order
+            $lineItems = $this->getFilteredEntitiesOfRepository($this->container->get('order_line_item.repository'), 'orderId', $order->getId(), $context);
             /** @var OrderLineItemEntity $lineItem */
             foreach ($lineItems as $lineItem)                                                // iterate through all line items of this order
             {
