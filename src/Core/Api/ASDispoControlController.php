@@ -200,24 +200,11 @@ class ASDispoControlController extends AbstractController
 
     public function upsertDispoControlEntry(string $productId, Context $context): ?Response
     {
-
-        /** @var EntityRepositoryInterface $asDispoDataRepository */
-        $productRepository = $this->get('product.repository');
         /** @var EntityRepositoryInterface $asDispoDataRepository */
         $asDispoDataRepository = $this->get('as_dispo_control_data.repository');
-
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('productId', $productId));
-
-        $searchResultDispo = $asDispoDataRepository->search($criteria, $context);
-
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('id', $productId));
-
-        /** @var EntitySearchResult $searchResult */
-        $searchResult = $productRepository->search($criteria, $context);
+        $searchResultDispo = $this->getFilteredEntitiesOfRepository($asDispoDataRepository, 'productId', $productId, $context);
         /** @var ProductEntity $product */
-        $product = $searchResult->first();
+        $product = $this->getFilteredEntitiesOfRepository($this->get('product.repository'), 'id', $productId, $context);
 
         $productNumber = $product->getProductNumber();
         $productName = $product->getName();
@@ -227,15 +214,12 @@ class ASDispoControlController extends AbstractController
         if (count($searchResultDispo) > 0) { // update existing entity
             $data[] = [
                 'id' => $searchResultDispo->first()->getId(),
-                'notificationsActivated' => true,
                 'productId' => $productId,
                 'productName' => $productName,
                 'productNumber' => $productNumber,
                 'stock' => $product->getStock(),
                 'commissioned' => $commissioned,
-                'stockAvailable' => $availableStock,
-                'incoming' => 0, 'minimumThreshold' => 0,
-                'notificationThreshold' => 0
+                'stockAvailable' => $availableStock
             ];
         } else { // create new entity
             $data[] = [
@@ -246,7 +230,8 @@ class ASDispoControlController extends AbstractController
                 'stock' => $product->getStock(),
                 'commissioned' => $commissioned,
                 'stockAvailable' => $availableStock,
-                'incoming' => 0, 'minimumThreshold' => 0,
+                'incoming' => 0, 
+                'minimumThreshold' => 0,
                 'notificationThreshold' => 0
             ];
         }
