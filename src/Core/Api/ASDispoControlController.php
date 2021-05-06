@@ -165,7 +165,7 @@ class ASDispoControlController extends AbstractController
         foreach ($orders as $order)                                                          // iterate through all orders
         {
             $orderState = $order->getStateMachineState()->getTechnicalName();
-            if ($orderState == 'completed' || $orderState == 'cancelled' || $orderState == 'open')                   // skip order if it is not relevant for the available stock
+            if ($orderState == 'completed' || $orderState == 'cancelled' || $orderState == 'appointed') // skip order if it is not relevant for the available stock
                 continue;
 
             $lineItems = $this->getFilteredEntitiesOfRepository($this->container->get('order_line_item.repository'), 'orderId', $order->getId(), $context);
