@@ -23,11 +23,5 @@
             <helpText>Input as many recipients as needed in valid formation: NAME DELIMITER(;) MAIL</helpText>
             <helpText lang="de-DE">Geben Sie beliebig viele Empfänger in valider Form ein: NAME TRENNZEICHEN(;) MAILADRESSE.</helpText>
         </input-field>
-
-        <component name="sw-entity-single-select">
-            <name>fallbackSaleschannelNotification</name>
-            <entity>sales_channel</entity>
-            <label>Choose a fallback sales channel as origin for notifications if no other sales channel is known</label>
-        </component>
     </card>
 </config>

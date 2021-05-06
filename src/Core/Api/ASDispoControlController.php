@@ -105,7 +105,6 @@ class ASDispoControlController extends AbstractController
     /* Sends an eMail to every entry in the plugin configuration inside the administration frontend */
     private function sendNotification(string $errorSubject, string $message, $recipientData)
     {
-        $notificationSalesChannel = $this->systemConfigService->get('ASDispositionControl.config.fallbackSaleschannelNotification');
         $recipients = null;
         for ($i = 0; $i < count($recipientData); $i += 2) {
             $recipientName = $recipientData[$i];
@@ -117,7 +116,7 @@ class ASDispoControlController extends AbstractController
             }
             $recipients[$recipientAddress] = $recipientName;
         }
-        $this->mailServiceHelper->sendMyMail($recipients, $notificationSalesChannel, $this->senderName, $errorSubject, $message, $message, ['']);
+        $this->mailServiceHelper->sendMyMail($recipients, null, $this->senderName, $errorSubject, $message, $message, ['']);
     }
 
     /**
